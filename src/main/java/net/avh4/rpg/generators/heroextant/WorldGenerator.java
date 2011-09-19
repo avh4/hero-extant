@@ -107,7 +107,7 @@ public class WorldGenerator {
 				int gid = 0;
 				switch (worldTile[x][y].tileType) {
 				case Sea:
-					gid = 21;
+					gid = 21 - (int) (worldTile[x][y].elevation / SEA_LEVEL * 3);
 					break;
 				case Grassland:
 					gid = 10;
