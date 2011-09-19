@@ -97,7 +97,7 @@ public class WorldGenerator {
 
 		for (int y = 0; y < worldH; y++) {
 			for (int x = 0; x < worldW; x++) {
-				final float e = (float) worldTile[x][y].temperature;
+				final float e = (float) worldTile[x][y].elevation;
 				Color c;
 				switch (worldTile[x][y].tileType) {
 				case Undefined:
@@ -157,8 +157,42 @@ public class WorldGenerator {
 		determineWorldTerrainTypes();
 	}
 
+	/**
+	 * Attempt to classify each temperature/rain/waterSaturation combo as a
+	 * terrain type
+	 */
 	private void determineWorldTerrainTypes() {
-		// TODO Auto-generated method stub
+		for (int y = 0; y < worldH; y++) {
+			for (int x = 0; x < worldW; x++) {
+				if (worldTile[x][y].elevation <= SEA_LEVEL) {
+					worldTile[x][y].tileType = TileType.Sea;
+				} else if (worldTile[x][y].temperature < 0.15) {
+					worldTile[x][y].tileType = TileType.Frozen;
+				} else if (worldTile[x][y].tileType == TileType.River) {
+					; // already a river
+				} else if (worldTile[x][y].elevation > 0.666) {
+					if (worldTile[x][y].temperature <= 0.15) {
+						worldTile[x][y].tileType = TileType.Frozen;
+					} else if (worldTile[x][y].rainfall < 0.4) {
+						worldTile[x][y].tileType = TileType.BarrenMountain;
+					} else {
+						worldTile[x][y].tileType = TileType.GreenMountain;
+					}
+				} else if (worldTile[x][y].rainfall < 0.150) {
+					worldTile[x][y].tileType = TileType.Desert;
+				} else if (worldTile[x][y].rainfall < 0.250) {
+					worldTile[x][y].tileType = TileType.Grassland;
+				} else if (worldTile[x][y].rainfall < 0.325) {
+					worldTile[x][y].tileType = TileType.Forest;
+				} else if (worldTile[x][y].rainfall <= 1.0) {
+					if (worldTile[x][y].temperature > 0.3) {
+						worldTile[x][y].tileType = TileType.Jungle;
+					} else {
+						worldTile[x][y].tileType = TileType.Forest;
+					}
+				}
+			}
+		}
 
 	}
 
