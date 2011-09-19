@@ -1,0 +1,16 @@
+terrains.png:
+
+Tile types can be read with the following codes:
+
+TILE_TYPE_SEA             RGB(000,000,128)
+TILE_TYPE_GRASSLAND       RGB(128,255,000)
+TILE_TYPE_FOREST          RGB(000,200,000)
+TILE_TYPE_JUNGLE          RGB(000,128,000)
+TILE_TYPE_DESERT          RGB(200,200,000)
+TILE_TYPE_GREEN_MOUNTAIN  RGB(090,128,090)
+TILE_TYPE_BARREN_MOUNTAIN RGB(128,090,090)
+TILE_TYPE_FROZEN          RGB(255,255,255)
+TILE_TYPE_RIVER           RGB(000,000,255)
+
+Terrain types are decided by the function "wgen_DetermineWorldTerrainTypes" in
+the file "hexWorldgen_backgend.cps" based on elevation, rain and temperature.

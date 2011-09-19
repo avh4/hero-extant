@@ -1,0 +1,16 @@
+# Constants used by the Theme Compiler
+
+# Modes
+: MODE = (STRICT, TRUE)
+
+# Font Flags
+! HAG_FONT_NORMAL         = 0
+! HAG_FONT_BOLD           = 1
+! HAG_FONT_ITALIC         = 2
+! HAG_FONT_UNDERLINED     = 4
+! HAG_FONT_STRIKETHROUGH  = 8
+    
+# Text Alignment
+! HAG_TEXT_LEFT       = 0
+! HAG_TEXT_CENTER     = 1
+! HAG_TEXT_RIGHT      = 2

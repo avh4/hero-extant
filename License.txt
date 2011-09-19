@@ -1,0 +1,32 @@
+    
+    Hero Extant
+    Copyright (C) 2010 Ben Golightly (golightly.ben@googlemail.com)
+    Licensed under GNU General Public License v3
+    See COPYING.txt
+
+    Under the provision of section 7 of the GPL license,
+    "Additional Terms", part (c) and part (e), any forks of
+    this software may not use the name "Hero Extant".
+    
+    Some individual source files (e.g. hexWorldgen_backend.cps)
+    are also licensed under the MIT license (GPL compatable),
+    in which case the individual source file will contain the
+    license text.
+        
+    SR3a compression
+    Copyright 2007 Matt Mahoney
+    Copyright Nania Francesco Antonio
+    Copyright Andrew Paterson
+    Licensed under GNU General Public License v3
+    See COPYING.txt
+        
+    Images prefixed with "imageafter-"
+    Copyright Image*After (gpl.imageafter.com)
+    Licensed under GNU General Public License v3
+    See COPYING.txt
+        
+    Kevin McLeod - Finding the Balance.mp3
+    Copyright Kevin MacLeod (incompetech.com)
+    Licensed under Creative Commons "Attribution 3.0"
+    See http://creativecommons.org/licenses/by/3.0/
+       

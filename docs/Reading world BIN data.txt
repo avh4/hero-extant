@@ -1,0 +1,150 @@
+Worlds are saved into the "lobal\worlds\" folder. You are free (and
+encouraged!) to use the generated worlds for your own projects. You are kindly
+requested (but not required) to tell people how the worlds you use were
+generated, e.g. "This map was generated with the 'Hero Extant World Generator'".
+Thank you!
+
+Here's how to read data from the world.bin file:
+
+First decompress the file if needed with the following command:
+
+    sr3a.exe d fileIn fileOut
+        
+For example:
+        
+    lib\sr3a\sr3a.exe d local\worlds\WORLD-ID\world.bin.packed local\worlds\WORLD-ID\world.bin
+
+
+-------------------------------------------------------------------------------
+IMPORTANT! DATA TYPES
+-------------------------------------------------------------------------------
+Byte:           Unsigned bytes (0 to 255)
+Integer/int:    Saved as 4 byte signed integer (-2147483648 to 2147483647)
+Real/float:     Saved as 4 byte integer. To get the real value, use
+                the DecompressReal function:
+                
+Function DecompressReal(r: Integer) : Real
+Begin
+    result = (ToReal(r) / 3600.0) - 1.0
+End
+-------------------------------------------------------------------------------
+
+
+-------------------------------------------------------------------------------
+Tile Types:
+-------------------------------------------------------------------------------
+TILE_TYPE_UNDEFINED       = 0
+TILE_TYPE_SEA             = 1
+TILE_TYPE_GRASSLAND       = 2
+TILE_TYPE_FOREST          = 3
+TILE_TYPE_JUNGLE          = 4
+TILE_TYPE_DESERT          = 5
+TILE_TYPE_GREEN_MOUNTAIN  = 6
+TILE_TYPE_BARREN_MOUNTAIN = 7
+TILE_TYPE_FROZEN          = 8
+TILE_TYPE_RIVER           = 9
+-------------------------------------------------------------------------------
+
+
+-------------------------------------------------------------------------------
+Meanings:
+-------------------------------------------------------------------------------
+Continuity: If a tile group/continuity of one tile is the same as the the group
+of another, then the tiles belong to the same body of terrain, e.g. the same
+forrest, the same ocean, the same lake.
+
+Tempertature, elevation, windz, rainfall, etc. range from 0.0 (none) to 1.0
+(maximum)
+-------------------------------------------------------------------------------
+
+
+Here's the format of the file header:
+
+-------------------------------------------------------------------------------
+OFFSET  SIZE            COMMENTS
+-------------------------------------------------------------------------------
+0       8 bytes         Header used as a hint for compression programs. Ignore.
+8       4 bytes         Int: The format version code. Current version is 2.
+12      4 bytes         Int: World width, hereafter "worldW"
+16      4 bytes         Int: World height, hereafter "worldh"
+20      4 bytes         Real: World wind direction, hereafter "worldWindDir".
+                              Multiply by 360 to get angle in degrees.
+-------------------------------------------------------------------------------
+
+
+Then there are several blocks of various sizes:
+
+-------------------------------------------------------------------------------
+BLOCK:                  BLOCKSIZE:              DATA SIZE:      DATA TYPE:
+-------------------------------------------------------------------------------
+Tile Types              worldW * worldH * 1     1 byte          Byte
+Contiguity Group        worldW * worldH * 4     4 bytes         Integer
+Elevation               worldW * worldH * 4     4 bytes         Real
+Wind Z Level            worldW * worldH * 4     4 bytes         Real
+Rainfall                worldW * worldH * 4     4 bytes         Real
+Temperature             worldW * worldH * 4     4 bytes         Real
+-------------------------------------------------------------------------------
+
+
+Here's how to read each block:
+
+Note that the constant integer OFFSET
+                                     = 1 ShiftLeft 30
+                                     =     1073741824
+
+-------------------------------------------------------------------------------
+Tile Types:
+-------------------------------------------------------------------------------
+For y = 0 to (worldH-1)
+     For x = 0 to (worldW-1)
+        If (x = 0) then
+            tile[x,y].tileType = ReadByte(f) - 128
+        Else
+            tile[x,y].tileType = (ReadByte(f) - 128) + tile[x-1,y].tileType
+        Endif
+    Next
+Next
+-------------------------------------------------------------------------------
+
+
+-------------------------------------------------------------------------------
+Contiguity Group:
+-------------------------------------------------------------------------------
+PRECOMPRESS_ABS_OFFSET = 1073741824 // (1 Shl 32)
+
+For y = 0 to (worldH-1)
+     For x = 0 to (worldW-1)
+        If (x = 0) then
+            contiguousMap[x,y] = ReadInt(f) - OFFSET
+        Else
+            contiguousMap[x,y] = (ReadInt(f)-OFFSET) + contiguousMap[x-1,y]
+        Endif
+    Next
+Next    
+-------------------------------------------------------------------------------
+
+
+-------------------------------------------------------------------------------
+Elevation, Wind Z Level, Rainfall and Temperature:
+-------------------------------------------------------------------------------
+PRECOMPRESS_ABS_OFFSET = 1073741824 // (1 Shl 32)
+
+For y = 0 to (worldH-1)
+     For x = 0 to (worldW-1)
+        If x = 0 then
+            tile[x,y].value = DecompressReal(ReadInt(f))
+        Else
+            tile[x,y].value = DecompressReal(ReadInt(f))
+            tile[x,y].value = tile[x,y].value + tile[x-1,y].value
+        Endif
+        
+        If tile[x,y].value < 0.0 then tile[x,y].value = 0.0
+        If tile[x,y].value > 1.0 then tile[x,y].value = 1.0
+    Next
+Next
+-------------------------------------------------------------------------------
+
+
+
+
+

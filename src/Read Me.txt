@@ -1,0 +1,18 @@
+.cps
+
+Use Cobra (http://www.cobrabytes.com/) to compile ".cps" sourcecode.
+
+Dependencies are included in separate folders in this directory.
+
+Dependencies should be compiled and copied into your "Cobra\bin\libs\" directory.
+
+Source should be in the root of the directory (i.e. one level up from this "src" folder).
+
+Compile and pack "hex.cps" and "viewer.cps" to get the executionables.
+
+
+
+.cpp
+
+See sr3a.cpp text for compilation instructions (sr3a.exe goes into /lib/sr3a/sr3a.exe)
+

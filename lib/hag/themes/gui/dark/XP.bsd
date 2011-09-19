@@ -1,0 +1,540 @@
+# -----------------------------------------------------------
+# Theme Info
+# -----------------------------------------------------------
+$ Name = XP
+$ Author = TopHat Stuff
+$ Desc = A sensible Windows XP theme
+$ Version = 20100216
+! Compatible = 2
+# -----------------------------------------------------------
+# This .bsd file contains data that the Hag Theme Compiler
+# can compile into a theme for the Hag GUI.
+# See http://www.tophatstuff.co.uk/?p=42
+# -----------------------------------------------------------
+
+
+
+# -----------------------------------------------------------
+# Notes
+# -----------------------------------------------------------
+# This theme data is compiled into binary - without a copy of
+# the HAG Theme Compiler, editing it will have no effect.
+#
+# All colors should be given in length 3 or length 6 hex.
+#
+# e.g. 	#000 = black, #FFF = white, #F00 = red, #0F0 = green,
+# 		#00F = blue, #FF0 = yellow, #F90 = orange,
+#		#FFF = #FFFFFF, #000 = #000000, #123 = #112233
+#
+# Alpha should be given in range 0 to 255.
+#
+# See const.bsd in the directory of the HAG Theme Compiler for
+# a list of accepted fontStyle and textAlignment constants,
+# although note that some textAlignment styles are not always
+# valid (e.g. radio buttons cannot be centered)
+#
+# Simple boolean and integer maths are supported (but don't go
+# wild). To insert one string into another, use the format
+# $ mystring = prefix[variable]suffix
+# -----------------------------------------------------------
+
+
+
+# -----------------------------------------------------------
+# Local Theme Options (these aren't compiled)
+# -----------------------------------------------------------
+$ font = arial
+! size_medium = 10
+! size_small = 10
+
+? any_aaliasing = FALSE
+? button_aaliasing = any_aaliasing AND TRUE
+? radiobutton_aaliasing = any_aaliasing AND FALSE
+? checkbox_aaliasing = any_aaliasing AND FALSE
+? dropdown_aaliasing = any_aaliasing AND FALSE
+? tab_aaliasing = any_aaliasing AND TRUE
+? listbox_aaliasing = any_aaliasing AND FALSE
+
+# Recommended background colour for this theme: (235,233,237)
+# -----------------------------------------------------------
+
+
+
+# -----------------------------------------------------------
+# Buttons (normal, hover, focus, active)
+# -----------------------------------------------------------
+
+? button = TRUE
+
+$ button_normal_fontName = [font]
+! button_normal_fontSize = size_medium
+! button_normal_fontStyle = HAG_FONT_NORMAL
+$ button_normal_fontColor_rgb = 000
+! button_normal_fontColor_alpha = 255
+! button_normal_textAlignment = HAG_TEXT_CENTER
+? button_normal_textAAliasing = button_aaliasing
+
+$ button_hover_fontName = [font]
+! button_hover_fontSize = size_medium
+! button_hover_fontStyle = HAG_FONT_NORMAL
+$ button_hover_fontColor_rgb = 000
+! button_hover_fontColor_alpha = 255
+! button_hover_textAlignment = HAG_TEXT_CENTER
+? button_hover_textAAliasing = button_aaliasing
+
+$ button_focus_fontName = [font]
+! button_focus_fontSize = size_medium
+! button_focus_fontStyle = HAG_FONT_NORMAL
+$ button_focus_fontColor_rgb = 000
+! button_focus_fontColor_alpha = 255
+! button_focus_textAlignment = HAG_TEXT_CENTER
+? button_focus_textAAliasing = button_aaliasing
+
+$ button_active_fontName = [font]
+! button_active_fontSize = size_medium
+! button_active_fontStyle = HAG_FONT_NORMAL
+$ button_active_fontColor_rgb = 000
+! button_active_fontColor_alpha = 255
+! button_active_textAlignment = HAG_TEXT_CENTER
+? button_active_textAAliasing = button_aaliasing
+
+$ button_disabled_fontName = [font]
+! button_disabled_fontSize = size_medium
+! button_disabled_fontStyle = HAG_FONT_NORMAL
+$ button_disabled_fontColor_rgb = 777
+! button_disabled_fontColor_alpha = 255
+! button_disabled_textAlignment = HAG_TEXT_CENTER
+? button_disabled_textAAliasing = button_aaliasing
+
+
+
+# -----------------------------------------------------------
+# Progress Bars
+# -----------------------------------------------------------
+
+# This element has no styles that can be applied to it.
+
+
+
+# -----------------------------------------------------------
+# Radio Buttons (normal, hover, active, disabled)
+# -----------------------------------------------------------
+
+? radiobutton = TRUE
+
+$ radiobutton_normal_unselected_fontName = [font]
+! radiobutton_normal_unselected_fontSize = size_small
+! radiobutton_normal_unselected_fontStyle = HAG_FONT_NORMAL
+$ radiobutton_normal_unselected_fontColor_rgb = 000
+! radiobutton_normal_unselected_fontColor_alpha = 255
+! radiobutton_normal_unselected_textAlignment = HAG_TEXT_LEFT
+? radiobutton_normal_unselected_textAAliasing = radiobutton_aaliasing
+
+$ radiobutton_hover_unselected_fontName = [font]
+! radiobutton_hover_unselected_fontSize = size_small
+! radiobutton_hover_unselected_fontStyle = HAG_FONT_NORMAL
+$ radiobutton_hover_unselected_fontColor_rgb = 000
+! radiobutton_hover_unselected_fontColor_alpha = 255
+! radiobutton_hover_unselected_textAlignment = HAG_TEXT_LEFT
+? radiobutton_hover_unselected_textAAliasing = radiobutton_aaliasing
+
+$ radiobutton_active_unselected_fontName = [font]
+! radiobutton_active_unselected_fontSize = size_small
+! radiobutton_active_unselected_fontStyle = HAG_FONT_NORMAL
+$ radiobutton_active_unselected_fontColor_rgb = 000
+! radiobutton_active_unselected_fontColor_alpha = 255
+! radiobutton_active_unselected_textAlignment = HAG_TEXT_LEFT
+? radiobutton_active_unselected_textAAliasing = radiobutton_aaliasing
+
+$ radiobutton_disabled_unselected_fontName = [font]
+! radiobutton_disabled_unselected_fontSize = size_small
+! radiobutton_disabled_unselected_fontStyle = HAG_FONT_NORMAL
+$ radiobutton_disabled_unselected_fontColor_rgb = 777
+! radiobutton_disabled_unselected_fontColor_alpha = 255
+! radiobutton_disabled_unselected_textAlignment = HAG_TEXT_LEFT
+? radiobutton_disabled_unselected_textAAliasing = radiobutton_aaliasing
+
+$ radiobutton_normal_selected_fontName = [font]
+! radiobutton_normal_selected_fontSize = size_small
+! radiobutton_normal_selected_fontStyle = HAG_FONT_NORMAL
+$ radiobutton_normal_selected_fontColor_rgb = 000
+! radiobutton_normal_selected_fontColor_alpha = 255
+! radiobutton_normal_selected_textAlignment = HAG_TEXT_LEFT
+? radiobutton_normal_selected_textAAliasing = radiobutton_aaliasing
+
+$ radiobutton_hover_selected_fontName = [font]
+! radiobutton_hover_selected_fontSize = size_small
+! radiobutton_hover_selected_fontStyle = HAG_FONT_NORMAL
+$ radiobutton_hover_selected_fontColor_rgb = 000
+! radiobutton_hover_selected_fontColor_alpha = 255
+! radiobutton_hover_selected_textAlignment = HAG_TEXT_LEFT
+? radiobutton_hover_selected_textAAliasing = radiobutton_aaliasing
+
+$ radiobutton_active_selected_fontName = [font]
+! radiobutton_active_selected_fontSize = size_small
+! radiobutton_active_selected_fontStyle = HAG_FONT_NORMAL
+$ radiobutton_active_selected_fontColor_rgb = 000
+! radiobutton_active_selected_fontColor_alpha = 255
+! radiobutton_active_selected_textAlignment = HAG_TEXT_LEFT
+? radiobutton_active_selected_textAAliasing = radiobutton_aaliasing
+
+$ radiobutton_disabled_selected_fontName = [font]
+! radiobutton_disabled_selected_fontSize = size_small
+! radiobutton_disabled_selected_fontStyle = HAG_FONT_NORMAL
+$ radiobutton_disabled_selected_fontColor_rgb = 777
+! radiobutton_disabled_selected_fontColor_alpha = 255
+! radiobutton_disabled_selected_textAlignment = HAG_TEXT_LEFT
+? radiobutton_disabled_selected_textAAliasing = radiobutton_aaliasing
+
+
+
+# -----------------------------------------------------------
+# CheckBoxes (normal, hover, active, disabled)
+# -----------------------------------------------------------
+
+? checkbox = TRUE
+
+$ checkbox_normal_unselected_fontName = [font]
+! checkbox_normal_unselected_fontSize = size_small
+! checkbox_normal_unselected_fontStyle = HAG_FONT_NORMAL
+$ checkbox_normal_unselected_fontColor_rgb = 000
+! checkbox_normal_unselected_fontColor_alpha = 255
+! checkbox_normal_unselected_textAlignment = HAG_TEXT_LEFT
+? checkbox_normal_unselected_textAAliasing = checkbox_aaliasing
+
+$ checkbox_hover_unselected_fontName = [font]
+! checkbox_hover_unselected_fontSize = size_small
+! checkbox_hover_unselected_fontStyle = HAG_FONT_NORMAL
+$ checkbox_hover_unselected_fontColor_rgb = 000
+! checkbox_hover_unselected_fontColor_alpha = 255
+! checkbox_hover_unselected_textAlignment = HAG_TEXT_LEFT
+? checkbox_hover_unselected_textAAliasing = checkbox_aaliasing
+
+$ checkbox_active_unselected_fontName = [font]
+! checkbox_active_unselected_fontSize = size_small
+! checkbox_active_unselected_fontStyle = HAG_FONT_NORMAL
+$ checkbox_active_unselected_fontColor_rgb = 000
+! checkbox_active_unselected_fontColor_alpha = 255
+! checkbox_active_unselected_textAlignment = HAG_TEXT_LEFT
+? checkbox_active_unselected_textAAliasing = checkbox_aaliasing
+
+$ checkbox_disabled_unselected_fontName = [font]
+! checkbox_disabled_unselected_fontSize = size_small
+! checkbox_disabled_unselected_fontStyle = HAG_FONT_NORMAL
+$ checkbox_disabled_unselected_fontColor_rgb = 777
+! checkbox_disabled_unselected_fontColor_alpha = 255
+! checkbox_disabled_unselected_textAlignment = HAG_TEXT_LEFT
+? checkbox_disabled_unselected_textAAliasing = checkbox_aaliasing
+
+$ checkbox_normal_selected_fontName = [font]
+! checkbox_normal_selected_fontSize = size_small
+! checkbox_normal_selected_fontStyle = HAG_FONT_NORMAL
+$ checkbox_normal_selected_fontColor_rgb = 000
+! checkbox_normal_selected_fontColor_alpha = 255
+! checkbox_normal_selected_textAlignment = HAG_TEXT_LEFT
+? checkbox_normal_selected_textAAliasing = checkbox_aaliasing
+
+$ checkbox_hover_selected_fontName = [font]
+! checkbox_hover_selected_fontSize = size_small
+! checkbox_hover_selected_fontStyle = HAG_FONT_NORMAL
+$ checkbox_hover_selected_fontColor_rgb = 000
+! checkbox_hover_selected_fontColor_alpha = 255
+! checkbox_hover_selected_textAlignment = HAG_TEXT_LEFT
+? checkbox_hover_selected_textAAliasing = checkbox_aaliasing
+
+$ checkbox_active_selected_fontName = [font]
+! checkbox_active_selected_fontSize = size_small
+! checkbox_active_selected_fontStyle = HAG_FONT_NORMAL
+$ checkbox_active_selected_fontColor_rgb = 000
+! checkbox_active_selected_fontColor_alpha = 255
+! checkbox_active_selected_textAlignment = HAG_TEXT_LEFT
+? checkbox_active_selected_textAAliasing = checkbox_aaliasing
+
+$ checkbox_disabled_selected_fontName = [font]
+! checkbox_disabled_selected_fontSize = size_small
+! checkbox_disabled_selected_fontStyle = HAG_FONT_NORMAL
+$ checkbox_disabled_selected_fontColor_rgb = 777
+! checkbox_disabled_selected_fontColor_alpha = 255
+! checkbox_disabled_selected_textAlignment = HAG_TEXT_LEFT
+? checkbox_disabled_selected_textAAliasing = checkbox_aaliasing
+
+
+
+# -----------------------------------------------------------
+# Textboxes (default, disabled, selection, cursor, pointer)
+#			[normal, hover, focused, disabled]
+#
+# textbox_pointer_width will be divided by two to make
+# mouse-selection more accurate (I know that here is hardly
+# the most ideal place to specify it, considering that the
+# text mouse pointer may be of a different width to that
+# specified, so be aware that this setting may move soon).
+# -----------------------------------------------------------
+
+? textbox = TRUE
+
+$ textbox_default_fontName = arial
+! textbox_default_fontSize = 10
+$ textbox_default_fontColor_rgb = 000
+! textbox_default_fontColor_alpha = 255
+
+$ textbox_disabled_fontColor_rgb = 777
+! textbox_disabled_fontColor_alpha = 255
+
+$ textbox_selection_fontColor_rgb = FFF
+! textbox_selection_fontColor_alpha = 255
+$ textbox_selection_backColor_rgb = 5E81BC
+! textbox_selection_backColor_alpha = 255
+
+$ textbox_cursor_color_rgb = 000
+! textbox_cursor_color_alpha = 255
+! textbox_cursor_width = 2
+! textbox_cursor_height = 15
+
+! textbox_pointer_width = 6
+
+
+# -----------------------------------------------------------
+# Text (normal, title, href)
+# -----------------------------------------------------------
+
+? text = TRUE
+
+$ text_normal_fontName = arial
+! text_normal_fontSize = 10
+! text_normal_fontStyle = HAG_FONT_NORMAL
+$ text_normal_fontColor_rgb = 000
+! text_normal_fontColor_alpha = 255
+! text_normal_textAlignment = HAG_TEXT_LEFT
+? text_normal_textAAliasing = FALSE
+
+$ text_title_fontName = arial
+! text_title_fontSize = 14
+! text_title_fontStyle = HAG_FONT_NORMAL
+$ text_title_fontColor_rgb = 000
+! text_title_fontColor_alpha = 255
+! text_title_textAlignment = HAG_TEXT_LEFT
+? text_title_textAAliasing = TRUE
+
+$ text_href_fontName = arial
+! text_href_fontSize = 10
+! text_href_fontStyle = HAG_FONT_UNDERLINED
+$ text_href_fontColor_rgb = 00F
+! text_href_fontColor_alpha = 255
+! text_href_textAlignment = HAG_TEXT_LEFT
+? text_href_textAAliasing = FALSE
+
+
+
+# -----------------------------------------------------------
+# DropDowns (normal, hover, active, disabled)
+# -----------------------------------------------------------
+
+? dropdown = TRUE
+
+$ dropdown_normal_fontName = arial
+! dropdown_normal_fontSize = 10
+! dropdown_normal_fontStyle = HAG_FONT_NORMAL
+$ dropdown_normal_fontColor_rgb = 000
+! dropdown_normal_fontColor_alpha = 255
+! dropdown_normal_textAlignment = HAG_TEXT_LEFT
+? dropdown_normal_textAAliasing = dropdown_aaliasing
+
+$ dropdown_hover_fontName = arial
+! dropdown_hover_fontSize = 10
+! dropdown_hover_fontStyle = HAG_FONT_NORMAL
+$ dropdown_hover_fontColor_rgb = 000
+! dropdown_hover_fontColor_alpha = 255
+! dropdown_hover_textAlignment = HAG_TEXT_LEFT
+? dropdown_hover_textAAliasing = dropdown_aaliasing
+
+$ dropdown_active_fontName = arial
+! dropdown_active_fontSize = 10
+! dropdown_active_fontStyle = HAG_FONT_NORMAL
+$ dropdown_active_fontColor_rgb = 000
+! dropdown_active_fontColor_alpha = 255
+! dropdown_active_textAlignment = HAG_TEXT_LEFT
+? dropdown_active_textAAliasing = dropdown_aaliasing
+
+$ dropdown_disabled_fontName = arial
+! dropdown_disabled_fontSize = 10
+! dropdown_disabled_fontStyle = HAG_FONT_NORMAL
+$ dropdown_disabled_fontColor_rgb = 777
+! dropdown_disabled_fontColor_alpha = 255
+! dropdown_disabled_textAlignment = HAG_TEXT_LEFT
+? dropdown_disabled_textAAliasing = dropdown_aaliasing
+
+
+
+# -----------------------------------------------------------
+# DropDown Box Items (normal, hover)
+# -----------------------------------------------------------
+
+! dropdown_box_above_yoffset = 2
+! dropdown_box_below_yoffset = -2
+
+$ dropdown_box_normal_fontName = arial
+! dropdown_box_normal_fontSize = 10
+! dropdown_box_normal_fontStyle = HAG_FONT_NORMAL
+$ dropdown_box_normal_fontColor_rgb = 000
+! dropdown_box_normal_fontColor_alpha = 255
+! dropdown_box_normal_textAlignment = HAG_TEXT_LEFT
+? dropdown_box_normal_textAAliasing = dropdown_aaliasing
+
+$ dropdown_box_hover_fontName = arial
+! dropdown_box_hover_fontSize = 10
+! dropdown_box_hover_fontStyle = HAG_FONT_NORMAL
+$ dropdown_box_hover_fontColor_rgb = FFF
+! dropdown_box_hover_fontColor_alpha = 255
+$ dropdown_box_hover_backColor_rgb = 5E81BC
+! dropdown_box_hover_backColor_alpha = 255
+! dropdown_box_hover_textAlignment = HAG_TEXT_LEFT
+? dropdown_box_hover_textAAliasing = dropdown_aaliasing
+
+
+
+# -----------------------------------------------------------
+# Listbox Items (normal, active, hover, disabled)
+# -----------------------------------------------------------
+
+? listbox = TRUE
+
+$ listbox_normal_fontName = arial
+! listbox_normal_fontSize = 10
+! listbox_normal_fontStyle = HAG_FONT_NORMAL
+$ listbox_normal_fontColor_rgb = 000
+! listbox_normal_fontColor_alpha = 255
+$ listbox_normal_backColor_rgb = FFF
+! listbox_normal_textAlignment = HAG_TEXT_LEFT
+? listbox_normal_textAAliasing = listbox_aaliasing
+
+$ listbox_hover_fontName = arial
+! listbox_hover_fontSize = 10
+! listbox_hover_fontStyle = HAG_FONT_NORMAL
+$ listbox_hover_fontColor_rgb = 000
+! listbox_hover_fontColor_alpha = 255
+$ listbox_hover_backColor_rgb = FFF
+! listbox_hover_textAlignment = HAG_TEXT_LEFT
+? listbox_hover_textAAliasing = listbox_aaliasing
+
+$ listbox_active_fontName = arial
+! listbox_active_fontSize = 10
+! listbox_active_fontStyle = HAG_FONT_NORMAL
+$ listbox_active_fontColor_rgb = FFF
+! listbox_active_fontColor_alpha = 255
+$ listbox_active_backColor_rgb = 00A
+! listbox_active_textAlignment = HAG_TEXT_LEFT
+? listbox_active_textAAliasing = listbox_aaliasing
+
+$ listbox_disabled_fontName = arial
+! listbox_disabled_fontSize = 10
+! listbox_disabled_fontStyle = HAG_FONT_NORMAL
+$ listbox_disabled_fontColor_rgb = 777
+! listbox_disabled_fontColor_alpha = 255
+$ listbox_disabled_backColor_rgb = FFF
+! listbox_disabled_textAlignment = HAG_TEXT_LEFT
+? listbox_disabled_textAAliasing = listbox_aaliasing
+
+
+
+# -----------------------------------------------------------
+# Tabs (inactive, hover, active)
+# -----------------------------------------------------------
+
+? tab = TRUE
+
+$ tab_inactive_fontName = [font]
+! tab_inactive_fontSize = size_medium
+! tab_inactive_fontStyle = HAG_FONT_NORMAL
+$ tab_inactive_fontColor_rgb = 000
+! tab_inactive_fontColor_alpha = 255
+! tab_inactive_textAlignment = HAG_TEXT_CENTER
+? tab_inactive_textAAliasing = tab_aaliasing
+
+$ tab_hover_fontName = [font]
+! tab_hover_fontSize = size_medium
+! tab_hover_fontStyle = HAG_FONT_NORMAL
+$ tab_hover_fontColor_rgb = 000
+! tab_hover_fontColor_alpha = 255
+! tab_hover_textAlignment = HAG_TEXT_CENTER
+? tab_hover_textAAliasing = tab_aaliasing
+
+$ tab_active_fontName = [font]
+! tab_active_fontSize = size_medium
+! tab_active_fontStyle = HAG_FONT_NORMAL
+$ tab_active_fontColor_rgb = 000
+! tab_active_fontColor_alpha = 255
+! tab_active_textAlignment = HAG_TEXT_CENTER
+? tab_active_textAAliasing = tab_aaliasing
+
+
+
+# -----------------------------------------------------------
+# Frames
+# -----------------------------------------------------------
+
+? frame = TRUE
+
+# Placeholder styles
+$ frame_tab_fontName = null
+! frame_tab_fontSize = 0
+! frame_tab_fontStyle = 0
+$ frame_tab_fontColor_rgb = 000
+! frame_tab_fontColor_alpha = 0
+! frame_tab_textAlignment = 0
+? frame_tab_textAAliasing = FALSE
+
+$ frame_roundborder_fontName = [font]
+! frame_roundborder_fontSize = 8
+! frame_roundborder_fontStyle = HAG_FONT_NORMAL
+$ frame_roundborder_fontColor_rgb = 4C7AD0
+! frame_roundborder_fontColor_alpha = 255
+! frame_roundborder_textAlignment = HAG_TEXT_LEFT
+? frame_roundborder_textAAliasing = FALSE
+
+$ frame_roundsolid_fontName = [font]
+! frame_roundsolid_fontSize = size_medium
+! frame_roundsolid_fontStyle = HAG_FONT_BOLD
+$ frame_roundsolid_fontColor_rgb = 000
+! frame_roundsolid_fontColor_alpha = 255
+! frame_roundsolid_textAlignment = HAG_TEXT_LEFT
+? frame_roundsolid_textAAliasing = any_aaliasing
+
+# Placeholder styles
+$ frame_squareborder_fontName = null
+! frame_squareborder_fontSize = 0
+! frame_squareborder_fontStyle = 0
+$ frame_squareborder_fontColor_rgb = 000
+! frame_squareborder_fontColor_alpha = 0
+! frame_squareborder_textAlignment = 0
+? frame_squareborder_textAAliasing = FALSE
+
+# Placeholder styles
+$ frame_squaresolid_fontName = null
+! frame_squaresolid_fontSize = 0
+! frame_squaresolid_fontStyle = 0
+$ frame_squaresolid_fontColor_rgb = 000
+! frame_squaresolid_fontColor_alpha = 0
+! frame_squaresolid_textAlignment = 0
+? frame_squaresolid_textAAliasing = FALSE
+
+$ frame_mockwindow_fontName = [font]
+! frame_mockwindow_fontSize = size_medium
+! frame_mockwindow_fontStyle = HAG_FONT_BOLD
+$ frame_mockwindow_fontColor_rgb = E0E0E0
+! frame_mockwindow_fontColor_alpha = 255
+! frame_mockwindow_textAlignment = HAG_TEXT_LEFT
+? frame_mockwindow_textAAliasing = any_aaliasing
+
+$ frame_header_fontName = arial
+! frame_header_fontSize = 12
+! frame_header_fontStyle = HAG_FONT_BOLD
+$ frame_header_fontColor_rgb = 000
+! frame_header_fontColor_alpha = 255
+! frame_header_textAlignment = HAG_TEXT_LEFT
+? frame_header_textAAliasing = TRUE
+
+
+
+
+

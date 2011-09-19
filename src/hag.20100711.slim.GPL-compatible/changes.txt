@@ -1,0 +1,36 @@
+v20100711 : 11th July 2010
+
+    * New GUI theme, "dark"
+    * Fixed crash in PositionForm for forms with progress bars
+    * Fixed PositionForm not applying to slider elements
+    * Tweaked button rendering behaviour
+
+
+v20100223 : 23rd February 2010
+
+    * Changed license to standard MIT license
+    * Added a Canvas GUI element and releated functions & procedures.
+    * Added a ListBox GUI element and related functions & procedures.
+    * Added a ScrollBar GUI element and related functions & procedures.
+    * Themes updated to support ListBox customisations (new themes are fully backwards compatible with older versions of Hag)
+    * Theme compiler updated to work with new themes (new compiler is fully backwards compatible with older themes)
+    * Added experimental function CreateChildForm
+    * Added procedure TextBoxSetFontStyle
+    * Added procedure TextBoxSetFontColor
+    * Fixed case where text-wrapping of hag text elements was sometimes ignored.
+    * Fixed drop-down boxes not blocking clicks over all elements
+    * Fixed drop-down box text positioning
+    * Fixed drop-down boxes not clearing their list of options when freed
+    * Fixed case where drop-down box sprites were re-created needlessly
+    * Fixed FlushTextBox not fully clearing the textbox's update flags
+    * Fixed HagFreeGuiTheme not fully freeing the existing theme images
+    * Fixed several incorrect error and debug log strings
+    * Fixed several incorrect code comments
+
+v20080630 : 30th June 2008
+
+    * Added procedure HagUpdateAll_AutoKeys
+
+v20080608 : 8th June 2008
+
+    * Initial Release

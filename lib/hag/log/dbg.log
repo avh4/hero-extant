@@ -1,0 +1,451 @@
+4           HagPrefEnable: hag_prefEnable[2] = True
+5           HagLoadGuiTheme: dark
+5               LoadThemeImage: button\normal_left.png (FOUND)
+6               LoadThemeImage: button\normal_mid.png (FOUND)
+7               LoadThemeImage: button\normal_right.png (FOUND)
+8               LoadThemeImage: button\hover_left.png (FOUND)
+8               LoadThemeImage: button\hover_mid.png (FOUND)
+9               LoadThemeImage: button\hover_right.png (FOUND)
+10              LoadThemeImage: button\focused_left.png (FOUND)
+11              LoadThemeImage: button\focused_mid.png (FOUND)
+11              LoadThemeImage: button\focused_right.png (FOUND)
+12              LoadThemeImage: button\active_left.png (FOUND)
+13              LoadThemeImage: button\active_mid.png (FOUND)
+14              LoadThemeImage: button\active_right.png (FOUND)
+15              LoadThemeImage: button\disabled_left.png (REDIRECT)
+15                  LoadThemeImage: button\normal_left.png (FOUND)
+16              LoadThemeImage: button\disabled_mid.png (REDIRECT)
+17                  LoadThemeImage: button\normal_mid.png (FOUND)
+17              LoadThemeImage: button\disabled_right.png (REDIRECT)
+18                  LoadThemeImage: button\normal_right.png (FOUND)
+19              LoadThemeImage: progressbar\horizontal_left.png (FOUND)
+20              LoadThemeImage: progressbar\horizontal_mid.png (FOUND)
+20              LoadThemeImage: progressbar\horizontal_right.png (FOUND)
+21              LoadThemeImage: progressbar\horizontal_item.png (FOUND)
+22              LoadThemeImage: progressbar\vertical_left.png (FOUND)
+23              LoadThemeImage: progressbar\vertical_mid.png (FOUND)
+23              LoadThemeImage: progressbar\vertical_right.png (FOUND)
+24              LoadThemeImage: progressbar\vertical_item.png (FOUND)
+25              LoadThemeImage: slider\horizontal_top.png (FOUND)
+26              LoadThemeImage: slider\horizontal_mid.png (FOUND)
+27              LoadThemeImage: slider\horizontal_bottom.png (FOUND)
+27              LoadThemeImage: slider\horizontal_marking.png (FOUND)
+28              LoadThemeImage: slider\vertical_top.png (FOUND)
+29              LoadThemeImage: slider\vertical_mid.png (FOUND)
+30              LoadThemeImage: slider\vertical_bottom.png (FOUND)
+30              LoadThemeImage: slider\vertical_marking.png (FOUND)
+31              LoadThemeImage: slider\horizontal_normal_slider.png (FOUND)
+32              LoadThemeImage: slider\horizontal_hover_slider.png (FOUND)
+33              LoadThemeImage: slider\horizontal_disabled_slider.png (FOUND)
+34              LoadThemeImage: slider\vertical_normal_slider.png (FOUND)
+34              LoadThemeImage: slider\vertical_hover_slider.png (FOUND)
+35              LoadThemeImage: slider\vertical_disabled_slider.png (FOUND)
+36              LoadThemeImage: radiobutton\normal_unselected.png (FOUND)
+37              LoadThemeImage: radiobutton\hover_unselected.png (FOUND)
+38              LoadThemeImage: radiobutton\active_unselected.png (REDIRECT)
+38                  LoadThemeImage: radiobutton\hover_selected.png (FOUND)
+39              LoadThemeImage: radiobutton\disabled_unselected.png (FOUND)
+40              LoadThemeImage: radiobutton\normal_selected.png (FOUND)
+41              LoadThemeImage: radiobutton\hover_selected.png (FOUND)
+41              LoadThemeImage: radiobutton\active_selected.png (REDIRECT)
+42                  LoadThemeImage: radiobutton\hover_unselected.png (FOUND)
+43              LoadThemeImage: radiobutton\disabled_selected.png (FOUND)
+44              LoadThemeImage: checkbox\normal_unselected.png (FOUND)
+44              LoadThemeImage: checkbox\hover_unselected.png (FOUND)
+45              LoadThemeImage: checkbox\active_unselected.png (REDIRECT)
+46                  LoadThemeImage: checkbox\hover_selected.png (FOUND)
+47              LoadThemeImage: checkbox\disabled_unselected.png (FOUND)
+47              LoadThemeImage: checkbox\normal_selected.png (FOUND)
+48              LoadThemeImage: checkbox\hover_selected.png (FOUND)
+49              LoadThemeImage: checkbox\active_selected.png (REDIRECT)
+50                  LoadThemeImage: checkbox\hover_unselected.png (FOUND)
+50              LoadThemeImage: checkbox\disabled_selected.png (FOUND)
+51              LoadThemeImage: textbox\normal_left.png (FOUND)
+52              LoadThemeImage: textbox\normal_mid.png (FOUND)
+53              LoadThemeImage: textbox\normal_right.png (FOUND)
+54              LoadThemeImage: textbox\hover_left.png (FOUND)
+54              LoadThemeImage: textbox\hover_mid.png (FOUND)
+55              LoadThemeImage: textbox\hover_right.png (FOUND)
+56              LoadThemeImage: textbox\focused_left.png (FOUND)
+57              LoadThemeImage: textbox\focused_mid.png (FOUND)
+58              LoadThemeImage: textbox\focused_right.png (FOUND)
+58              LoadThemeImage: textbox\disabled_left.png (FOUND)
+59              LoadThemeImage: textbox\disabled_mid.png (FOUND)
+60              LoadThemeImage: textbox\disabled_right.png (FOUND)
+61              LoadThemeImage: dropdown\normal_left.png (FOUND)
+62              LoadThemeImage: dropdown\normal_mid.png (FOUND)
+62              LoadThemeImage: dropdown\normal_right.png (FOUND)
+63              LoadThemeImage: dropdown\hover_left.png (FOUND)
+64              LoadThemeImage: dropdown\hover_mid.png (FOUND)
+65              LoadThemeImage: dropdown\hover_right.png (FOUND)
+66              LoadThemeImage: dropdown\active_left.png (FOUND)
+66              LoadThemeImage: dropdown\active_mid.png (FOUND)
+67              LoadThemeImage: dropdown\active_right.png (FOUND)
+68              LoadThemeImage: dropdown\disabled_left.png (FOUND)
+69              LoadThemeImage: dropdown\disabled_mid.png (FOUND)
+70              LoadThemeImage: dropdown\disabled_right.png (FOUND)
+70              LoadThemeImage: dropdown\box\top_left.png (FOUND)
+71              LoadThemeImage: dropdown\box\top_mid.png (FOUND)
+72              LoadThemeImage: dropdown\box\top_right.png (FOUND)
+73              LoadThemeImage: dropdown\box\mid_left.png (FOUND)
+73              LoadThemeImage: dropdown\box\mid_mid.png (FOUND)
+74              LoadThemeImage: dropdown\box\mid_right.png (FOUND)
+75              LoadThemeImage: dropdown\box\bottom_left.png (FOUND)
+76              LoadThemeImage: dropdown\box\bottom_mid.png (FOUND)
+76              LoadThemeImage: dropdown\box\bottom_right.png (FOUND)
+77              LoadThemeImage: listbox\normal_top_left.png (FOUND)
+78              LoadThemeImage: listbox\normal_top_mid.png (FOUND)
+79              LoadThemeImage: listbox\normal_top_right.png (FOUND)
+79              LoadThemeImage: listbox\normal_mid_left.png (FOUND)
+80              LoadThemeImage: listbox\normal_mid_mid.png (FOUND)
+81              LoadThemeImage: listbox\normal_mid_right.png (FOUND)
+82              LoadThemeImage: listbox\normal_bottom_left.png (FOUND)
+83              LoadThemeImage: listbox\normal_bottom_mid.png (FOUND)
+83              LoadThemeImage: listbox\normal_bottom_right.png (FOUND)
+84              LoadThemeImage: listbox\disabled_top_left.png (REDIRECT)
+85                  LoadThemeImage: listbox\normal_top_left.png (FOUND)
+86              LoadThemeImage: listbox\disabled_top_mid.png (REDIRECT)
+86                  LoadThemeImage: listbox\normal_top_mid.png (FOUND)
+87              LoadThemeImage: listbox\disabled_top_right.png (REDIRECT)
+88                  LoadThemeImage: listbox\normal_top_right.png (FOUND)
+88              LoadThemeImage: listbox\disabled_mid_left.png (REDIRECT)
+89                  LoadThemeImage: listbox\normal_mid_left.png (FOUND)
+90              LoadThemeImage: listbox\disabled_mid_mid.png (FOUND)
+90              LoadThemeImage: listbox\disabled_mid_right.png (REDIRECT)
+91                  LoadThemeImage: listbox\normal_mid_right.png (FOUND)
+92              LoadThemeImage: listbox\disabled_bottom_left.png (REDIRECT)
+93                  LoadThemeImage: listbox\normal_bottom_left.png (FOUND)
+93              LoadThemeImage: listbox\disabled_bottom_mid.png (REDIRECT)
+94                  LoadThemeImage: listbox\normal_bottom_mid.png (FOUND)
+95              LoadThemeImage: listbox\disabled_bottom_right.png (REDIRECT)
+95                  LoadThemeImage: listbox\normal_bottom_right.png (FOUND)
+96              LoadThemeImage: tab\inactive_left.png (FOUND)
+97              LoadThemeImage: tab\inactive_mid.png (FOUND)
+98              LoadThemeImage: tab\inactive_right.png (FOUND)
+98              LoadThemeImage: tab\hover_left.png (FOUND)
+99              LoadThemeImage: tab\hover_mid.png (FOUND)
+100             LoadThemeImage: tab\hover_right.png (FOUND)
+101             LoadThemeImage: tab\active_left.png (FOUND)
+102             LoadThemeImage: tab\active_mid.png (FOUND)
+102             LoadThemeImage: tab\active_right.png (FOUND)
+103             LoadThemeImage: frames\tab\top_left.png (FOUND)
+104             LoadThemeImage: frames\tab\top_mid.png (FOUND)
+105             LoadThemeImage: frames\tab\top_right.png (FOUND)
+105             LoadThemeImage: frames\tab\mid_left.png (FOUND)
+106             LoadThemeImage: frames\tab\mid_mid.png (FOUND)
+107             LoadThemeImage: frames\tab\mid_right.png (FOUND)
+108             LoadThemeImage: frames\tab\bottom_left.png (FOUND)
+109             LoadThemeImage: frames\tab\bottom_mid.png (FOUND)
+110             LoadThemeImage: frames\tab\bottom_right.png (FOUND)
+110             LoadThemeImage: frames\roundborder\top_left.png (FOUND)
+111             LoadThemeImage: frames\roundborder\top_mid.png (FOUND)
+112             LoadThemeImage: frames\roundborder\top_right.png (FOUND)
+113             LoadThemeImage: frames\roundborder\mid_left.png (FOUND)
+113             LoadThemeImage: frames\roundborder\mid_mid.png (FOUND)
+114             LoadThemeImage: frames\roundborder\mid_right.png (FOUND)
+115             LoadThemeImage: frames\roundborder\bottom_left.png (FOUND)
+116             LoadThemeImage: frames\roundborder\bottom_mid.png (FOUND)
+117             LoadThemeImage: frames\roundborder\bottom_right.png (FOUND)
+117             LoadThemeImage: frames\roundsolid\top_left.png (FOUND)
+118             LoadThemeImage: frames\roundsolid\top_mid.png (FOUND)
+119             LoadThemeImage: frames\roundsolid\top_right.png (FOUND)
+120             LoadThemeImage: frames\roundsolid\mid_left.png (FOUND)
+120             LoadThemeImage: frames\roundsolid\mid_mid.png (FOUND)
+121             LoadThemeImage: frames\roundsolid\mid_right.png (FOUND)
+122             LoadThemeImage: frames\roundsolid\bottom_left.png (FOUND)
+123             LoadThemeImage: frames\roundsolid\bottom_mid.png (FOUND)
+124             LoadThemeImage: frames\roundsolid\bottom_right.png (FOUND)
+124             LoadThemeImage: frames\squareborder\top_left.png (FOUND)
+125             LoadThemeImage: frames\squareborder\top_mid.png (FOUND)
+126             LoadThemeImage: frames\squareborder\top_right.png (FOUND)
+127             LoadThemeImage: frames\squareborder\mid_left.png (FOUND)
+127             LoadThemeImage: frames\squareborder\mid_mid.png (FOUND)
+128             LoadThemeImage: frames\squareborder\mid_right.png (FOUND)
+129             LoadThemeImage: frames\squareborder\bottom_left.png (FOUND)
+130             LoadThemeImage: frames\squareborder\bottom_mid.png (FOUND)
+131             LoadThemeImage: frames\squareborder\bottom_right.png (FOUND)
+131             LoadThemeImage: frames\squaresolid\top_left.png (FOUND)
+132             LoadThemeImage: frames\squaresolid\top_mid.png (FOUND)
+133             LoadThemeImage: frames\squaresolid\top_right.png (FOUND)
+134             LoadThemeImage: frames\squaresolid\mid_left.png (FOUND)
+134             LoadThemeImage: frames\squaresolid\mid_mid.png (FOUND)
+135             LoadThemeImage: frames\squaresolid\mid_right.png (FOUND)
+136             LoadThemeImage: frames\squaresolid\bottom_left.png (FOUND)
+137             LoadThemeImage: frames\squaresolid\bottom_mid.png (FOUND)
+138             LoadThemeImage: frames\squaresolid\bottom_right.png (FOUND)
+138             LoadThemeImage: frames\mockwindow\top_left.png (FOUND)
+139             LoadThemeImage: frames\mockwindow\top_mid.png (FOUND)
+140             LoadThemeImage: frames\mockwindow\top_right.png (FOUND)
+141             LoadThemeImage: frames\mockwindow\mid_left.png (FOUND)
+142             LoadThemeImage: frames\mockwindow\mid_mid.png (FOUND)
+142             LoadThemeImage: frames\mockwindow\mid_right.png (FOUND)
+143             LoadThemeImage: frames\mockwindow\bottom_left.png (FOUND)
+144             LoadThemeImage: frames\mockwindow\bottom_mid.png (FOUND)
+145             LoadThemeImage: frames\mockwindow\bottom_right.png (FOUND)
+146             LoadThemeImage: frames\header\top_left.png (FOUND)
+146             LoadThemeImage: frames\header\top_mid.png (FOUND)
+147             LoadThemeImage: frames\header\top_right.png (FOUND)
+148             LoadThemeImage: frames\header\mid_left.png (FOUND)
+149             LoadThemeImage: frames\header\mid_mid.png (FOUND)
+150             LoadThemeImage: frames\header\mid_right.png (FOUND)
+150             LoadThemeImage: frames\header\bottom_left.png (FOUND)
+151             LoadThemeImage: frames\header\bottom_mid.png (FOUND)
+152             LoadThemeImage: frames\header\bottom_right.png (FOUND)
+153             LoadThemeImage: scrollbar\normal_up.png (FOUND)
+154             LoadThemeImage: scrollbar\normal_down.png (FOUND)
+154             LoadThemeImage: scrollbar\normal_slider.png (FOUND)
+155             LoadThemeImage: scrollbar\normal_bar.png (REDIRECT)
+156                 LoadThemeImage: scrollbar\bar.png (FOUND)
+156             LoadThemeImage: scrollbar\hover_up.png (FOUND)
+157             LoadThemeImage: scrollbar\hover_down.png (FOUND)
+158             LoadThemeImage: scrollbar\hover_slider.png (FOUND)
+160             LoadThemeImage: scrollbar\active_up.png (FOUND)
+160             LoadThemeImage: scrollbar\active_down.png (FOUND)
+161             LoadThemeImage: scrollbar\active_slider.png (REDIRECT)
+162                 LoadThemeImage: scrollbar\hover_slider.png (FOUND)
+163             LoadThemeImage: scrollbar\disabled_up.png (FOUND)
+163             LoadThemeImage: scrollbar\disabled_down.png (FOUND)
+164             LoadThemeImage: scrollbar\disabled_bar.png (REDIRECT)
+165                 LoadThemeImage: scrollbar\bar.png (FOUND)
+166             HagLoadGuiTheme: Theme 'lib\hag\\themes\gui\dark\dark.bin', compiled 20100709 / 07:21:50
+166                 HagLoadGuiTheme: Name: 'Dark', Author: 'TopHat Stuff', Version: '20100708'
+166                 HagLoadGuiTheme: Desc: 'A sensible near-black theme'
+167                 HagLoadGuiTheme: Compatible: 2, required: 2
+167                 HagLoadGuiTheme: Found hasinfo end marker (255) OK.
+168                     hasinfo: 0
+168                     hasinfo: 3
+169                     hasinfo: 4
+169                     hasinfo: 5
+169                     hasinfo: 6
+170                     hasinfo: 9
+170                     hasinfo: 10
+171                     hasinfo: 12
+171                     hasinfo: 13
+172                 Reading Compiled Button Data...
+172                 Reading Compiled Radio Button Data...
+172                 Reading Compiled Checkbox Data...
+173                 Reading Compiled Textbox Data...
+173                 Reading Compiled Text Data...
+174                 Reading Compiled DropDown Data...
+174                 Reading Compiled Tab Data...
+174                 Reading Compiled Frame Data...
+175                 Reading Compiled Listbox Data...
+175         HagLoadGuiTheme: End
+176         CreateForm: Created a form: 'frmMain'
+180         CreateScrollBar: Created a scrollbar: (366 by 21, dimensions 13 by 606 form: 'frmMain')
+180         CreateListBox: Created a list box element (form: 'frmMain')
+181         CreateButton: Created a button: 'Load World' (form: 'frmMain')
+182         CreateProgressBar: Created a ProgressBar: (20 by 718, form: 'frmMain')
+182         CreateCanvas: Created a canvas at 20, 698, measuring 360, 20, (form: 'frmMain')
+183         CreateForm: Created a form: 'frmWorld'
+192         CreateFrame: Created a frame: (0 by 0, form: 'frmWorld')
+194         CreateCanvas: Created a canvas at 1, 1, measuring 512, 512, (form: 'frmWorld')
+195         CreateDropDown: Created a drop down element: 'Rendered' (form: 'frmWorld')
+195         DropDownAddOption: 'Rendered'
+196         DropDownAddOption: 'Terrain'
+196         DropDownAddOption: 'Heightmap'
+197         DropDownAddOption: 'Heightmap - raw'
+197         DropDownAddOption: 'Rivers'
+198         DropDownAddOption: 'Temperatures'
+198         DropDownAddOption: 'Temperatures - raw'
+199         DropDownAddOption: 'Wind & Rain'
+199         DropDownAddOption: 'Just Wind'
+199         DropDownAddOption: 'Just Rain'
+200         PositionForm: (445,104) 'frmWorld'
+201             DrawTiledImage: Caching a new pre-tiled image...
+202                 NewTiledImage: Created blank canvas: ID(0,0,0), 352 by 25
+202             DrawTiledImage: Caching a new pre-tiled image...
+203                 NewTiledImage: Created blank canvas: ID(1,0,0), 356 by 25
+204             DrawTiledImage: Caching a new pre-tiled image...
+205                 NewTiledImage: Created blank canvas: ID(10,2,0), 358 by 1
+205             DrawTiledImage: Caching a new pre-tiled image...
+205                 NewTiledImage: Created blank canvas: ID(10,4,0), 1 by 606
+206             DrawTiledImage: Caching a new pre-tiled image...
+206                 NewTiledImage: Created blank canvas: ID(10,6,0), 1 by 606
+207             DrawTiledImage: Caching a new pre-tiled image...
+207                 NewTiledImage: Created blank canvas: ID(10,5,0), 358 by 606
+210             DrawTiledImage: Caching a new pre-tiled image...
+210                 NewTiledImage: Created blank canvas: ID(10,8,0), 358 by 1
+212             DrawTiledImage: Caching a new pre-tiled image...
+213                 NewTiledImage: Created blank canvas: ID(15,3,3), 13 by 606
+213             DrawTiledImage: Caching a new pre-tiled image...
+214                 NewTiledImage: Created blank canvas: ID(9,0,0), 121 by 25
+215             DrawTiledImage: Caching a new pre-tiled image...
+216                 NewTiledImage: Created blank canvas: ID(18,2,0), 138 by 1
+216             DrawTiledImage: Caching a new pre-tiled image...
+216                 NewTiledImage: Created blank canvas: ID(18,4,0), 1 by 179
+217             DrawTiledImage: Caching a new pre-tiled image...
+217                 NewTiledImage: Created blank canvas: ID(18,6,0), 1 by 179
+218             DrawTiledImage: Caching a new pre-tiled image...
+218                 NewTiledImage: Created blank canvas: ID(18,5,0), 138 by 179
+219             DrawTiledImage: Caching a new pre-tiled image...
+219                 NewTiledImage: Created blank canvas: ID(18,8,0), 138 by 1
+223             DrawTiledImage: Caching a new pre-tiled image...
+223                 NewTiledImage: Created blank canvas: ID(13,1,3), 482 by 16
+224             DrawTiledImage: Caching a new pre-tiled image...
+224                 NewTiledImage: Created blank canvas: ID(13,3,3), 16 by 482
+225             DrawTiledImage: Caching a new pre-tiled image...
+225                 NewTiledImage: Created blank canvas: ID(13,4,3), 482 by 482
+228             DrawTiledImage: Caching a new pre-tiled image...
+228                 NewTiledImage: Created blank canvas: ID(13,5,3), 16 by 482
+229             DrawTiledImage: Caching a new pre-tiled image...
+229                 NewTiledImage: Created blank canvas: ID(13,7,3), 482 by 16
+265         ListBoxAddOption: 'WORLD.Middle_Earth.20100711.184503'
+279         EnableButton: (False) 'Load World'
+279         EnableDropDown: (False)
+312             DrawTiledImage: Caching a new pre-tiled image...
+312                 NewTiledImage: Created blank canvas: ID(0,0,4), 352 by 25
+313             DrawTiledImage: Caching a new pre-tiled image...
+314                 NewTiledImage: Created blank canvas: ID(9,0,3), 121 by 25
+783         EnableButton: (True) 'Load World'
+1664            DrawTiledImage: Caching a new pre-tiled image...
+1665                NewTiledImage: Created blank canvas: ID(0,0,1), 352 by 25
+1848            DrawTiledImage: Caching a new pre-tiled image...
+1848                NewTiledImage: Created blank canvas: ID(0,0,3), 352 by 25
+1898            DrawTiledImage: Caching a new pre-tiled image...
+1899                NewTiledImage: Created blank canvas: ID(0,0,2), 352 by 25
+1900        ProgressBarPercent: (0 -> 10%)
+2398        ProgressBarPercent: (10 -> 100%)
+2431        ProgressBarPercent: (100 -> 0%)
+2462        ProgressBarPercent: (0 -> 2%)
+2487        ProgressBarPercent: (2 -> 5%)
+2498        ProgressBarPercent: (5 -> 8%)
+2514        ProgressBarPercent: (8 -> 10%)
+2554        ProgressBarPercent: (10 -> 14%)
+2565        ProgressBarPercent: (14 -> 15%)
+2599        ProgressBarPercent: (15 -> 16%)
+2615        ProgressBarPercent: (16 -> 17%)
+2649        ProgressBarPercent: (17 -> 18%)
+2682        ProgressBarPercent: (18 -> 19%)
+2716        ProgressBarPercent: (19 -> 20%)
+2749        ProgressBarPercent: (20 -> 21%)
+2766        ProgressBarPercent: (21 -> 22%)
+2799        ProgressBarPercent: (22 -> 23%)
+2832        ProgressBarPercent: (23 -> 24%)
+2866        ProgressBarPercent: (24 -> 25%)
+2899        ProgressBarPercent: (25 -> 26%)
+2916        ProgressBarPercent: (26 -> 27%)
+2949        ProgressBarPercent: (27 -> 28%)
+2982        ProgressBarPercent: (28 -> 29%)
+3016        ProgressBarPercent: (29 -> 30%)
+3049        ProgressBarPercent: (30 -> 31%)
+3082        ProgressBarPercent: (31 -> 32%)
+3116        ProgressBarPercent: (32 -> 33%)
+3133        ProgressBarPercent: (33 -> 34%)
+3166        ProgressBarPercent: (34 -> 35%)
+3199        ProgressBarPercent: (35 -> 36%)
+3233        ProgressBarPercent: (36 -> 37%)
+3249        ProgressBarPercent: (37 -> 38%)
+3283        ProgressBarPercent: (38 -> 39%)
+3316        ProgressBarPercent: (39 -> 40%)
+3350        ProgressBarPercent: (40 -> 41%)
+3383        ProgressBarPercent: (41 -> 42%)
+3400        ProgressBarPercent: (42 -> 43%)
+3453        ProgressBarPercent: (43 -> 44%)
+3470        ProgressBarPercent: (44 -> 45%)
+3503        ProgressBarPercent: (45 -> 46%)
+3537        ProgressBarPercent: (46 -> 47%)
+3570        ProgressBarPercent: (47 -> 48%)
+3603        ProgressBarPercent: (48 -> 49%)
+3620        ProgressBarPercent: (49 -> 50%)
+3654        ProgressBarPercent: (50 -> 51%)
+3687        ProgressBarPercent: (51 -> 52%)
+3720        ProgressBarPercent: (52 -> 53%)
+3753        ProgressBarPercent: (53 -> 54%)
+3770        ProgressBarPercent: (54 -> 55%)
+3804        ProgressBarPercent: (55 -> 56%)
+3837        ProgressBarPercent: (56 -> 57%)
+3870        ProgressBarPercent: (57 -> 58%)
+3904        ProgressBarPercent: (58 -> 59%)
+3937        ProgressBarPercent: (59 -> 60%)
+3971        ProgressBarPercent: (60 -> 61%)
+3987        ProgressBarPercent: (61 -> 62%)
+4021        ProgressBarPercent: (62 -> 63%)
+4054        ProgressBarPercent: (63 -> 64%)
+4088        ProgressBarPercent: (64 -> 65%)
+4104        ProgressBarPercent: (65 -> 66%)
+4138        ProgressBarPercent: (66 -> 67%)
+4171        ProgressBarPercent: (67 -> 68%)
+4204        ProgressBarPercent: (68 -> 69%)
+4238        ProgressBarPercent: (69 -> 70%)
+4254        ProgressBarPercent: (70 -> 71%)
+4304        ProgressBarPercent: (71 -> 72%)
+4321        ProgressBarPercent: (72 -> 73%)
+4355        ProgressBarPercent: (73 -> 74%)
+4388        ProgressBarPercent: (74 -> 75%)
+4422        ProgressBarPercent: (75 -> 76%)
+4455        ProgressBarPercent: (76 -> 77%)
+4471        ProgressBarPercent: (77 -> 78%)
+4505        ProgressBarPercent: (78 -> 79%)
+4538        ProgressBarPercent: (79 -> 80%)
+4572        ProgressBarPercent: (80 -> 81%)
+4605        ProgressBarPercent: (81 -> 82%)
+4621        ProgressBarPercent: (82 -> 83%)
+4655        ProgressBarPercent: (83 -> 84%)
+4689        ProgressBarPercent: (84 -> 85%)
+4720        ProgressBarPercent: (85 -> 86%)
+4755        ProgressBarPercent: (86 -> 87%)
+4788        ProgressBarPercent: (87 -> 88%)
+4805        ProgressBarPercent: (88 -> 89%)
+4839        ProgressBarPercent: (89 -> 90%)
+4872        ProgressBarPercent: (90 -> 91%)
+4906        ProgressBarPercent: (91 -> 92%)
+4939        ProgressBarPercent: (92 -> 93%)
+4955        ProgressBarPercent: (93 -> 94%)
+4989        ProgressBarPercent: (94 -> 95%)
+5022        ProgressBarPercent: (95 -> 96%)
+5056        ProgressBarPercent: (96 -> 97%)
+5089        ProgressBarPercent: (97 -> 98%)
+5106        ProgressBarPercent: (98 -> 99%)
+5139        ProgressBarPercent: (99 -> 100%)
+5286        ProgressBarPercent: (100 -> 10%)
+5540        ProgressBarPercent: (10 -> 100%)
+5572        ProgressBarPercent: (100 -> 0%)
+5621        EnableDropDown: (True)
+7424            DrawTiledImage: Caching a new pre-tiled image...
+7425                NewTiledImage: Created blank canvas: ID(9,0,1), 121 by 25
+7508            DrawTiledImage: Caching a new pre-tiled image...
+7508                NewTiledImage: Created blank canvas: ID(9,0,2), 121 by 25
+8993        HagFreeGuiTheme: Start
+8996        HagFreeGuiTheme: End
+8997        HagFreeTileCache: Start
+8997            HagFreeTileCache: ID(0,0,0), 352 by 25
+8998            HagFreeTileCache: ID(1,0,0), 356 by 25
+8998            HagFreeTileCache: ID(10,2,0), 358 by 1
+8999            HagFreeTileCache: ID(10,4,0), 1 by 606
+9000            HagFreeTileCache: ID(10,6,0), 1 by 606
+9000            HagFreeTileCache: ID(10,5,0), 358 by 606
+9001            HagFreeTileCache: ID(10,8,0), 358 by 1
+9001            HagFreeTileCache: ID(15,3,3), 13 by 606
+9002            HagFreeTileCache: ID(9,0,0), 121 by 25
+9002            HagFreeTileCache: ID(18,2,0), 138 by 1
+9003            HagFreeTileCache: ID(18,4,0), 1 by 179
+9003            HagFreeTileCache: ID(18,6,0), 1 by 179
+9004            HagFreeTileCache: ID(18,5,0), 138 by 179
+9004            HagFreeTileCache: ID(18,8,0), 138 by 1
+9005            HagFreeTileCache: ID(13,1,3), 482 by 16
+9005            HagFreeTileCache: ID(13,3,3), 16 by 482
+9006            HagFreeTileCache: ID(13,4,3), 482 by 482
+9007            HagFreeTileCache: ID(13,5,3), 16 by 482
+9007            HagFreeTileCache: ID(13,7,3), 482 by 16
+9008            HagFreeTileCache: ID(0,0,4), 352 by 25
+9008            HagFreeTileCache: ID(9,0,3), 121 by 25
+9009            HagFreeTileCache: ID(0,0,1), 352 by 25
+9009            HagFreeTileCache: ID(0,0,3), 352 by 25
+9010            HagFreeTileCache: ID(0,0,2), 352 by 25
+9010            HagFreeTileCache: ID(9,0,1), 121 by 25
+9011            HagFreeTileCache: ID(9,0,2), 121 by 25
+9012        HagFreeTileCache: End
+9012        HagFreeForms: Start
+9012            FreeForm: 'frmMain'
+9013                FreeButton: 'Load World'
+9014                FreeCanvas:
+9015                FreeProgressBar
+9015                FreeListBox:
+9016                ListBoxClearOptions:
+9017            FreeForm: 'frmWorld'
+9017                FreeCanvas:
+9018                FreeDropDown:
+9019                DropDownClearOptions:
+9019                FreeFrame: ''
+9020        HagFreeForms: End
