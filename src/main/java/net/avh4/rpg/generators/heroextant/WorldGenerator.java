@@ -5,6 +5,8 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 import javax.imageio.ImageIO;
@@ -95,7 +97,7 @@ public class WorldGenerator {
 
 		for (int y = 0; y < worldH; y++) {
 			for (int x = 0; x < worldW; x++) {
-				final float e = (float) worldTile[x][y].rainfall;
+				final float e = (float) worldTile[x][y].temperature;
 				Color c;
 				switch (worldTile[x][y].tileType) {
 				case Undefined:
@@ -161,8 +163,137 @@ public class WorldGenerator {
 	}
 
 	private void calculateWaterFlow() {
-		// TODO Auto-generated method stub
+		int steps = 0;
+		final double maxSteps = Math
+				.sqrt((worldW * worldW) + (worldH * worldH)) / 2;
+		// maxSteps = worldW / 2
+		final String resultString = "";
 
+		// Init rivers
+		final List<River> riverList = new ArrayList<River>();
+		for (int i = 0; i < maxSteps * 8; i++) {
+			final int x = r.nextInt(worldW - 3) + 1;
+			final int y = r.nextInt(worldH - 3) + 1;
+			if (worldTile[x][y].elevation > SEA_LEVEL
+					&& worldTile[x][y].elevation < 1.0) {
+				if (r.nextDouble() * worldTile[x][y].rainfall > 0.125) {
+					final River river = new River();
+					riverList.add(river);
+					river.x = x;
+					river.y = y;
+				}
+			}
+		}
+
+		// Water flow
+		int countMoves = 0;
+		int lastMoves = 0;
+		int moves = 0;
+		do {
+
+			lastMoves = moves;
+			moves = 0;
+			steps++;
+
+			// Water physics
+			for (final River river : riverList) {
+
+				final int x = river.x;
+				final int y = river.y;
+
+				if (worldTile[x][y].elevation > SEA_LEVEL && (x > 0) && (y > 0)
+						&& (x < worldW - 1) && (y < worldH - 1)) {
+					// Water flows based on cost, seeking the highest elevation
+					// difference
+					// biggest difference = lower (negative) cost
+
+					// Cost
+					// 0,0 1,0 2,0
+					// 0,1 *** 2,1
+					// 0,2 1,2 2,2
+					final double[][] cost = new double[3][3];
+					cost[0][0] = 0;
+					cost[1][0] = 0;
+					cost[2][0] = 0;
+					cost[0][1] = 0;
+					cost[2][1] = 0;
+					cost[0][2] = 0;
+					cost[1][2] = 0;
+					cost[2][2] = 0;
+
+					// Top
+					cost[0][0] = ((worldTile[x - 1][y - 1].elevation) - (worldTile[x][y].elevation)); // 1.41
+					cost[1][0] = (worldTile[x][y - 1].elevation)
+							- (worldTile[x][y].elevation);
+					cost[2][0] = ((worldTile[x + 1][y - 1].elevation) - (worldTile[x][y].elevation)); // 1.41
+
+					// Mid
+					cost[0][1] = (worldTile[x - 1][y].elevation)
+							- (worldTile[x][y].elevation);
+					cost[2][1] = (worldTile[x + 1][y].elevation)
+							- (worldTile[x][y].elevation);
+
+					// Bottom
+					cost[0][2] = ((worldTile[x - 1][y + 1].elevation) - (worldTile[x][y].elevation)); // 1.41
+					cost[1][2] = (worldTile[x][y + 1].elevation)
+							- (worldTile[x][y].elevation);
+					cost[2][2] = ((worldTile[x + 1][y + 1].elevation) - (worldTile[x][y].elevation)); // 1.41
+
+					// Randomize flow */ 2
+					cost[0][0] = cost[0][0] * r.nextDouble() * 1.5 + 0.5;
+					cost[1][0] = cost[1][0] * r.nextDouble() * 1.5 + 0.5;
+					cost[2][0] = cost[2][0] * r.nextDouble() * 1.5 + 0.5;
+					cost[0][1] = cost[0][1] * r.nextDouble() * 1.5 + 0.5;
+					cost[2][1] = cost[2][1] * r.nextDouble() * 1.5 + 0.5;
+					cost[0][2] = cost[0][2] * r.nextDouble() * 1.5 + 0.5;
+					cost[1][2] = cost[1][2] * r.nextDouble() * 1.5 + 0.5;
+					cost[2][2] = cost[2][2] * r.nextDouble() * 1.5 + 0.5;
+
+					// Highest Cost
+					double highestCost;
+					highestCost = Math.min(cost[0][0], cost[1][0]);
+					highestCost = Math.min(highestCost, cost[2][0]);
+					highestCost = Math.min(highestCost, cost[0][1]);
+					highestCost = Math.min(highestCost, cost[2][1]);
+					highestCost = Math.min(highestCost, cost[0][2]);
+					highestCost = Math.min(highestCost, cost[1][2]);
+					highestCost = Math.min(highestCost, cost[2][2]);
+
+					for (int i = 0; i <= 2; i++) {
+						for (int j = 0; j <= 2; j++) {
+							if ((i == 1 && j == 1) == false) /*
+															 * and (cost[i,j] <
+															 * 0)
+															 */{
+								// Divide water up...
+								if (cost[i][j] == highestCost) {
+									river.x = x + (i - 1);
+									river.y = y + (j - 1);
+									worldTile[x][y].waterSaturation = 1;
+									moves++;
+								}
+							}
+						}
+					}
+				}
+
+			}
+
+			countMoves = countMoves + moves;
+
+		} while (moves != 0 && steps <= maxSteps - 1);
+
+		// Make rivers
+		for (int y = 0; y < worldH; y++) {
+			for (int x = 0; x < worldW; x++) {
+				if (worldTile[x][y].waterSaturation > 0) {
+					worldTile[x][y].tileType = TileType.River;
+				}
+			}
+		}
+
+		// Done!
+		// resultString = "Moves: "+ToString(countMoves)
 	}
 
 	/**
