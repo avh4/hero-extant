@@ -313,10 +313,12 @@ public class WorldGenerator {
 					cost[2][2] = 0;
 
 					// Top
-					cost[0][0] = ((worldTile[x - 1][y - 1].elevation) - (worldTile[x][y].elevation)); // 1.41
+					// cost[0][0] = ((worldTile[x - 1][y - 1].elevation) -
+					// (worldTile[x][y].elevation)); // 1.41
 					cost[1][0] = (worldTile[x][y - 1].elevation)
 							- (worldTile[x][y].elevation);
-					cost[2][0] = ((worldTile[x + 1][y - 1].elevation) - (worldTile[x][y].elevation)); // 1.41
+					// cost[2][0] = ((worldTile[x + 1][y - 1].elevation) -
+					// (worldTile[x][y].elevation)); // 1.41
 
 					// Mid
 					cost[0][1] = (worldTile[x - 1][y].elevation)
@@ -325,30 +327,32 @@ public class WorldGenerator {
 							- (worldTile[x][y].elevation);
 
 					// Bottom
-					cost[0][2] = ((worldTile[x - 1][y + 1].elevation) - (worldTile[x][y].elevation)); // 1.41
+					// cost[0][2] = ((worldTile[x - 1][y + 1].elevation) -
+					// (worldTile[x][y].elevation)); // 1.41
 					cost[1][2] = (worldTile[x][y + 1].elevation)
 							- (worldTile[x][y].elevation);
-					cost[2][2] = ((worldTile[x + 1][y + 1].elevation) - (worldTile[x][y].elevation)); // 1.41
+					// cost[2][2] = ((worldTile[x + 1][y + 1].elevation) -
+					// (worldTile[x][y].elevation)); // 1.41
 
 					// Randomize flow */ 2
-					cost[0][0] = cost[0][0] * r.nextDouble() * 1.5 + 0.5;
+					// cost[0][0] = cost[0][0] * r.nextDouble() * 1.5 + 0.5;
 					cost[1][0] = cost[1][0] * r.nextDouble() * 1.5 + 0.5;
-					cost[2][0] = cost[2][0] * r.nextDouble() * 1.5 + 0.5;
+					// cost[2][0] = cost[2][0] * r.nextDouble() * 1.5 + 0.5;
 					cost[0][1] = cost[0][1] * r.nextDouble() * 1.5 + 0.5;
 					cost[2][1] = cost[2][1] * r.nextDouble() * 1.5 + 0.5;
-					cost[0][2] = cost[0][2] * r.nextDouble() * 1.5 + 0.5;
+					// cost[0][2] = cost[0][2] * r.nextDouble() * 1.5 + 0.5;
 					cost[1][2] = cost[1][2] * r.nextDouble() * 1.5 + 0.5;
-					cost[2][2] = cost[2][2] * r.nextDouble() * 1.5 + 0.5;
+					// cost[2][2] = cost[2][2] * r.nextDouble() * 1.5 + 0.5;
 
 					// Highest Cost
-					double highestCost;
-					highestCost = Math.min(cost[0][0], cost[1][0]);
-					highestCost = Math.min(highestCost, cost[2][0]);
+					double highestCost = cost[1][0];
+					// highestCost = Math.min(cost[0][0], cost[1][0]);
+					// highestCost = Math.min(highestCost, cost[2][0]);
 					highestCost = Math.min(highestCost, cost[0][1]);
 					highestCost = Math.min(highestCost, cost[2][1]);
-					highestCost = Math.min(highestCost, cost[0][2]);
+					// highestCost = Math.min(highestCost, cost[0][2]);
 					highestCost = Math.min(highestCost, cost[1][2]);
-					highestCost = Math.min(highestCost, cost[2][2]);
+					// highestCost = Math.min(highestCost, cost[2][2]);
 
 					for (int i = 0; i <= 2; i++) {
 						for (int j = 0; j <= 2; j++) {
