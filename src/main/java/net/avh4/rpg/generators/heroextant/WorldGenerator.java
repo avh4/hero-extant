@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -84,10 +85,66 @@ public class WorldGenerator {
 		final WorldGenerator w = new WorldGenerator(800, 600, Hemisphere.North);
 		// wgen_SaveWorldToBin(worldFolder, prgGen)
 		w.renderWorldToPng("rendered.png");
+		w.renderWorldToTmx("rendered.tmx");
 		// wgen_RenderHeightMapToPng(worldFolder + 'heightmap.png', prgGen)
 		// wgen_RenderTemperaturesToPng(worldFolder + 'temperatures.png',
 		// prgGen)
 		// wgen_FreeWorld()
+	}
+
+	private void renderWorldToTmx(final String filename) throws IOException {
+		final FileWriter fw = new FileWriter(filename);
+		fw.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
+		fw.write("<map version=\"1.0\" orientation=\"orthogonal\" width=\"800\" height=\"600\" tilewidth=\"32\" tileheight=\"32\">\n");
+		fw.write(" <tileset firstgid=\"1\" name=\"dg_grounds32\" tilewidth=\"32\" tileheight=\"32\">\n");
+		fw.write("  <image source=\"/Users/avh4/Documents/Graphics Library/Tiles/AngBandTk/dg_grounds32.gif\" width=\"288\" height=\"608\"/>\n");
+		fw.write(" </tileset>\n");
+		fw.write(" <layer name=\"Generated World\" width=\"800\" height=\"600\">\n");
+		fw.write("  <data>\n");
+
+		for (int y = 0; y < worldH; y++) {
+			for (int x = 0; x < worldW; x++) {
+				int gid = 0;
+				switch (worldTile[x][y].tileType) {
+				case Sea:
+					gid = 21;
+					break;
+				case Grassland:
+					gid = 10;
+					break;
+				case Forest:
+					gid = 56;
+					break;
+				case Jungle:
+					gid = 65;
+					break;
+				case Desert:
+					gid = 13;
+					break;
+				case GreenMountain:
+					gid = 118;
+					break;
+				case BarrenMountain:
+					gid = 125;
+					break;
+				case Frozen:
+					gid = 106;
+					break;
+				case River:
+					gid = 16;
+					break;
+				case Undefined:
+				default:
+					gid = 0;
+					break;
+				}
+				fw.write("   <tile gid=\"" + gid + "\"/>\n");
+			}
+		}
+		fw.write("  </data>\n");
+		fw.write(" </layer>\n");
+		fw.write("</map>\n");
+		fw.close();
 	}
 
 	private void renderWorldToPng(final String filename) throws IOException {
