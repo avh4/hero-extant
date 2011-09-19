@@ -93,7 +93,7 @@ public class WorldGenerator {
 
 		for (int y = 0; y < worldH; y++) {
 			for (int x = 0; x < worldW; x++) {
-				final float e = worldTile[x][y].elevation;
+				final float e = (float) worldTile[x][y].elevation;
 				Color c;
 				switch (worldTile[x][y].tileType) {
 				case Undefined:
@@ -103,13 +103,13 @@ public class WorldGenerator {
 					c = new Color(0f, 0f, (float) (0.5 * e + 0.5));
 					break;
 				case Grassland:
-					c = new Color(e * 0.5f, e, 0);
+					c = new Color(e * 0.5f, e, 0f);
 					break;
 				case Forest:
-					c = new Color(0f, e * .75f, 0);
+					c = new Color(0f, e * .75f, 0f);
 					break;
 				case Jungle:
-					c = new Color(0, 0.5f * e, 0);
+					c = new Color(0f, 0.5f * e, 0f);
 					break;
 				case Desert:
 					c = new Color(.75f * e, .75f * e, 0);
@@ -235,16 +235,43 @@ public class WorldGenerator {
 				if (worldTile[x][y].elevation > 1) {
 					worldTile[x][y].elevation = 1;
 				}
-				if (worldTile[x][y].elevation < 1) {
+				if (worldTile[x][y].elevation < 0) {
 					worldTile[x][y].elevation = 0;
 				}
 			}
 		}
 	}
 
-	private void divideWorld(final int i, final int j, final int k,
-			final int l, final double roughness, final double elevation) {
-		// TODO Auto-generated method stub
+	private void divideWorld(final int x1, final int y1, final int x2,
+			final int y2, final double roughness, final double midinit) {
+		final int w = x2 - x1;
+		final int h = y2 - y1;
+		final int midx = (x1 + x2) / 2;
+		final int midy = (y1 + y2) / 2;
 
+		double d = (((double) (w + h) / 2) / (worldW + worldH));
+		d = d * (r.nextDouble() * 2 - 1) * roughness;
+
+		if (w > 1 || h > 1) {
+
+			worldTile[midx][y1].elevation = (worldTile[x1][y1].elevation + worldTile[x2][y1].elevation) / 2;
+			worldTile[midx][y2].elevation = (worldTile[x1][y2].elevation + worldTile[x2][y2].elevation) / 2;
+			worldTile[x1][midy].elevation = (worldTile[x1][y1].elevation + worldTile[x1][y2].elevation) / 2;
+			worldTile[x2][midy].elevation = (worldTile[x2][y1].elevation + worldTile[x2][y2].elevation) / 2;
+			worldTile[midx][midy].elevation = d
+					+ ((worldTile[x1][y1].elevation
+							+ worldTile[x1][y2].elevation
+							+ worldTile[x2][y1].elevation + worldTile[x2][y2].elevation) / 4);
+
+			if (midinit > -1) {
+				worldTile[midx][midy].elevation = midinit;
+			}
+
+			divideWorld(x1, y1, midx, midy, roughness, -1);
+			divideWorld(midx, y1, x2, midy, roughness, -1);
+			divideWorld(x1, midy, midx, y2, roughness, -1);
+			divideWorld(midx, midy, x2, y2, roughness, -1);
+
+		}
 	}
 }
