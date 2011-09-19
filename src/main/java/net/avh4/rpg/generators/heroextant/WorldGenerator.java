@@ -45,17 +45,18 @@ public class WorldGenerator {
 	//
 	//
 	private static double SEA_LEVEL = 0.333;
-	// WGEN_WIND_GRAVITY = 0.975
-	// WGEN_WIND_RESOLUTION = 4 // 1 is perfect, higher = rougher
+	private static double WIND_GRAVITY = 0.975;
+	private static int WIND_RESOLUTION = 4; // 1 is perfect, higher = rougher
 	private static int TEMPERATURE_BAND_RESOLUTION = 2; // 1 is perfect, higher
 														// = rougher
-	// WGEN_RAIN_FALLOFF = 0.2 // Default 0.2 - less for less rain, more for
+	private static double RAIN_FALLOFF = 0.2; // Default 0.2 - less for less
+												// rain, more for
 	// more rain
 	// WGEN_MAX_TEMPERATURE = 40
 	// WGEN_MIN_TEMPERATURE = -60
 	//
-	// WIND_OFFSET = 180
-	// WIND_PARITY = -1 // -1 or 1
+	private static double WIND_OFFSET = 180;
+	private static int WIND_PARITY = -1; // -1 or 1
 
 	private Tile worldTile[][];
 	//
@@ -94,7 +95,7 @@ public class WorldGenerator {
 
 		for (int y = 0; y < worldH; y++) {
 			for (int x = 0; x < worldW; x++) {
-				final float e = (float) worldTile[x][y].temperature;
+				final float e = (float) worldTile[x][y].rainfall;
 				Color c;
 				switch (worldTile[x][y].tileType) {
 				case Undefined:
@@ -164,8 +165,80 @@ public class WorldGenerator {
 
 	}
 
+	/**
+	 * Orographic effect:
+	 * 
+	 * # Warm, moist air carried in by wind<br/>
+	 * # Mountains forces air upwards, where it cools and condenses (rains)<br/>
+	 * # The leeward side of the mountain is drier and casts a "rain shadow".
+	 * 
+	 * Wind is modeled here as a square of particles of area<br/>
+	 * worldW * worldH<br/>
+	 * and<br/>
+	 * Sqrt(worldW^2+worldH^2) away<br/>
+	 * The wind travels in direction of worldWinDir
+	 */
 	private void calculateWind() {
-		// TODO Auto-generated method stub
+		// Init wind x,y,w,h
+		final double r = Math.sqrt((double) (worldW * worldW)
+				+ (double) (worldH * worldH));
+		final double theta1 = worldWindDir * WIND_PARITY + WIND_OFFSET;
+		final double theta2 = 180 - 90 - (worldWindDir * WIND_PARITY + WIND_OFFSET);
+		final double sinT1 = Math.sin(theta1);
+		final double sinT2 = Math.sin(theta2);
+		final int windw = (worldW);
+		final int windh = (worldH);
+		final double mapsqrt = Math.sqrt((worldW * worldW) + (worldH * worldH));
+
+		// Init wind
+		final double[][] wind = new double[windw][windh];
+		final double rainfall = 1.0;
+		final double[][] windr = new double[windw][windh];
+		for (int x = 0; x < windw; x++) {
+			for (int y = 0; y < windh; y++) {
+				wind[x][y] = 0;
+				windr[x][y] = ((rainfall * mapsqrt) / WIND_RESOLUTION)
+						* RAIN_FALLOFF;
+			}
+		}
+
+		// Cast wind
+		for (double d = r; d >= 0; d -= WIND_RESOLUTION) {
+
+			final double windx = d * sinT1;
+			final double windy = d * sinT2;
+
+			for (int x = 0; x < windw; x++) {
+				for (int y = 0; y < windh; y++) {
+
+					if (windx + x > -1 && windy + y > -1) {
+						if (windx + x < worldW && windy + y < worldH) {
+
+							final double windz = worldTile[(int) (windx + x)][(int) (windy + y)].elevation;
+							wind[x][y] = Math.max(wind[x][y] * WIND_GRAVITY,
+									windz);
+
+							final double rainRemaining = windr[x][y]
+									/ (((rainfall * mapsqrt) / WIND_RESOLUTION) * RAIN_FALLOFF)
+									* (1.0 - (worldTile[x][y].temperature / 2.0));
+							double rlost = (wind[x][y]) * rainRemaining;
+							if (rlost < 0) {
+								rlost = 0;
+							}
+							windr[x][y] = windr[x][y] - rlost;
+							if (windr[x][y] < 0) {
+								windr[x][y] = 0;
+							}
+
+							worldTile[(int) (windx + x)][(int) (windy + y)].windz = wind[x][y];
+							worldTile[(int) (windx + x)][(int) (windy + y)].rainfall = rlost;
+						}
+					}
+
+				}
+			}
+
+		}
 
 	}
 
