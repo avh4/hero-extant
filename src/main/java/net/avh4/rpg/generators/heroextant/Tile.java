@@ -6,5 +6,5 @@ public class Tile {
 	float wind = 0;
 	float rainfall = 0;
 	int waterSaturation = 0; // float
-	float temperature = 0;
+	double temperature = 0;
 }

@@ -44,10 +44,11 @@ public class WorldGenerator {
 	// WGEN_PREVIEW_TEMPERATURE_RAW = 512 ; export
 	//
 	//
-	// WGEN_SEA_LEVEL = 0.333
+	private static double SEA_LEVEL = 0.333;
 	// WGEN_WIND_GRAVITY = 0.975
 	// WGEN_WIND_RESOLUTION = 4 // 1 is perfect, higher = rougher
-	// TEMPERATURE_BAND_RESOLUTION = 2 // 1 is perfect, higher = rougher
+	private static int TEMPERATURE_BAND_RESOLUTION = 2; // 1 is perfect, higher
+														// = rougher
 	// WGEN_RAIN_FALLOFF = 0.2 // Default 0.2 - less for less rain, more for
 	// more rain
 	// WGEN_MAX_TEMPERATURE = 40
@@ -93,7 +94,7 @@ public class WorldGenerator {
 
 		for (int y = 0; y < worldH; y++) {
 			for (int x = 0; x < worldW; x++) {
-				final float e = (float) worldTile[x][y].elevation;
+				final float e = (float) worldTile[x][y].temperature;
 				Color c;
 				switch (worldTile[x][y].tileType) {
 				case Undefined:
@@ -169,7 +170,78 @@ public class WorldGenerator {
 	}
 
 	private void calculateTemperatures(final Hemisphere hemisphere) {
-		// TODO Auto-generated method stub
+		for (int i = 0; i < worldH; i += TEMPERATURE_BAND_RESOLUTION) {
+
+			// Generate band
+			final int bandy = i;
+			final int bandrange = 7;
+
+			double bandtemp;
+			switch (hemisphere) {
+			case North:
+				// 0, 0.5, 1
+				bandtemp = (double) i / worldH;
+				break;
+			case Equator:
+				// 0, 1, 0
+				if (i < worldH / 2) {
+					bandtemp = (double) i / worldH;
+					bandtemp = bandtemp * 2.0;
+				} else {
+					bandtemp = 1.0 - (double) i / worldH;
+					bandtemp = bandtemp * 2.0;
+				}
+				break;
+			case South:
+				// 1, 0.5, 0
+				bandtemp = 1.0 - (double) i / worldH;
+				break;
+			default:
+				bandtemp = 0;
+				break;
+			}
+			bandtemp = Math.max(bandtemp, 0.075);
+
+			final int[] band = new int[worldW];
+			for (int x = 0; x < worldW; x++) {
+				band[x] = bandy;
+			}
+
+			// Randomize
+			double dir = 1.0;
+			double diradj = 1;
+			double dirsin = r.nextDouble() * 7 + 1;
+			for (int x = 0; x < worldW; x++) {
+				band[x] = (int) (band[x] + dir);
+				dir = dir + r.nextDouble() * (Math.sin(dirsin * x) * diradj);
+				if (dir > bandrange) {
+					diradj = -1;
+					dirsin = r.nextDouble() * 7 + 1;
+				}
+				if (dir < -bandrange) {
+					diradj = 1;
+					dirsin = r.nextDouble() * 7 + 1;
+				}
+			}
+
+			for (int x = 0; x < worldW; x++) {
+				for (int y = 0; y < worldH; y++) {
+
+					if (worldTile[x][y].elevation < SEA_LEVEL) {
+						// Water tiles
+						if (y > band[x]) {
+							worldTile[x][y].temperature = bandtemp * 0.7;
+						}
+					} else {
+						// Land tiles
+						if (y > band[x]) {
+							worldTile[x][y].temperature = bandtemp
+									* (1.0 - (worldTile[x][y].elevation - SEA_LEVEL));
+						}
+					}
+				}
+			}
+		}
 
 	}
 
