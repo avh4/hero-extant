@@ -152,43 +152,7 @@ public class WorldGenerator {
 
 		for (int y = 0; y < worldH; y++) {
 			for (int x = 0; x < worldW; x++) {
-				final float e = (float) worldTile[x][y].elevation;
-				Color c;
-				switch (worldTile[x][y].tileType) {
-				case Undefined:
-					c = new Color(e, 0, 0);
-					break;
-				case Sea:
-					c = new Color(0f, 0f, (float) (0.5 * e + 0.5));
-					break;
-				case Grassland:
-					c = new Color(e * 0.5f, e, 0f);
-					break;
-				case Forest:
-					c = new Color(0f, e * .75f, 0f);
-					break;
-				case Jungle:
-					c = new Color(0f, 0.5f * e, 0f);
-					break;
-				case Desert:
-					c = new Color(.75f * e, .75f * e, 0);
-					break;
-				case GreenMountain:
-					c = new Color(.35f * e, .5f * e, .35f * e);
-					break;
-				case BarrenMountain:
-					c = new Color(.5f * e, .35f * e, .35f * e);
-					break;
-				case Frozen:
-					c = new Color(.25f + .75f * e, .25f + .75f * e,
-							.25f + .75f * e);
-					break;
-				case River:
-					c = new Color(0, 0, e);
-					break;
-				default:
-					c = new Color(r.nextFloat(), r.nextFloat(), r.nextFloat());
-				}
+				final Color c = colorFromTileTypeAndElevation(y, x);
 
 				g.setColor(c);
 				g.drawLine(x, y, x, y);
@@ -198,6 +162,52 @@ public class WorldGenerator {
 		g.dispose();
 
 		ImageIO.write(tmpImg, "PNG", new File(filename));
+	}
+
+	private Color colorFromTileTypeAndElevation(final int y, final int x) {
+		final float e = (float) worldTile[x][y].elevation;
+		Color c;
+		switch (worldTile[x][y].tileType) {
+		case Undefined:
+			c = new Color(e, 0, 0);
+			break;
+		case Sea:
+			c = new Color(0f, 0f, (float) (0.5 * e + 0.5));
+			break;
+		case Grassland:
+			c = new Color(e * 0.5f, e, 0f);
+			break;
+		case Forest:
+			c = new Color(0f, e * .75f, 0f);
+			break;
+		case Jungle:
+			c = new Color(0f, 0.5f * e, 0f);
+			break;
+		case Desert:
+			c = new Color(.75f * e, .75f * e, 0);
+			break;
+		case GreenMountain:
+			c = new Color(.35f * e, .5f * e, .35f * e);
+			break;
+		case BarrenMountain:
+			c = new Color(.5f * e, .35f * e, .35f * e);
+			break;
+		case Frozen:
+			c = new Color(.25f + .75f * e, .25f + .75f * e, .25f + .75f * e);
+			break;
+		case River:
+			c = new Color(0, 0, e);
+			break;
+		default:
+			c = new Color(r.nextFloat(), r.nextFloat(), r.nextFloat());
+		}
+		return c;
+	}
+
+	@SuppressWarnings("unused")
+	private Color colorFromRegion(final int y, final int x) {
+		return new Color(contiguousMap[x][y] * 40 % 256,
+				contiguousMap[x][y] * 40 % 256, contiguousMap[x][y] * 40 % 256);
 	}
 
 	public WorldGenerator(final int width, final int height,
