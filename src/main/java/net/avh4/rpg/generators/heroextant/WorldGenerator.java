@@ -773,4 +773,8 @@ public class WorldGenerator {
 		contiguousAreaCount = limit;
 
 	}
+
+	public TileType getTerrainAtLocation(final int x, final int y) {
+		return worldTile[x][y].tileType;
+	}
 }
