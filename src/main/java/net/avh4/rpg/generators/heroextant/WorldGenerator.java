@@ -69,10 +69,8 @@ public class WorldGenerator {
 	// windx, windy: Real
 	// windw, windh: Integer
 	//
-	// // Ccontiguous areas
-	// contiguousMap: Array[MAX_WORLD_X, MAX_WORLD_Y] of Integer
-	// contiguousAreaCount: Integer
-	//
+	private int[][] contiguousMap;
+
 	private int worldW;
 	private int worldH;
 	private double worldWindDir;
@@ -217,6 +215,7 @@ public class WorldGenerator {
 		calculateWind();
 		calculateWaterFlow();
 		determineWorldTerrainTypes();
+		determineContiguousAreas();
 	}
 
 	/**
@@ -649,5 +648,119 @@ public class WorldGenerator {
 			divideWorld(midx, midy, x2, y2, roughness, -1);
 
 		}
+	}
+
+	private boolean isContiguous(final Tile a, final Tile b) {
+		return a.tileType == b.tileType;
+	}
+
+	private void determineContiguousAreas() {
+		contiguousMap = new int[worldW][worldH];
+		for (int y = 0; y < worldH; y++) {
+			for (int x = 0; x < worldW; x++) {
+				contiguousMap[x][y] = 1;
+			}
+		}
+
+		// Step 1 - identify groups
+		int i = 2;
+		for (int y = 1; y < worldH; y++) {
+			for (int x = 1; x < worldW; x++) {
+				if (!isContiguous(worldTile[x][y], worldTile[x - 1][y])
+						&& !isContiguous(worldTile[x][y], worldTile[x][y - 1])) {
+					contiguousMap[x][y] = i;
+					i++;
+				} else {
+					int mincg1 = 0;
+					int mincg2 = 0;
+
+					if (isContiguous(worldTile[x][y], worldTile[x][y - 1])) {
+						contiguousMap[x][y] = contiguousMap[x][y - 1];
+						mincg1 = contiguousMap[x][y - 1];
+					}
+					if (isContiguous(worldTile[x][y], worldTile[x - 1][y])) {
+						contiguousMap[x][y] = contiguousMap[x - 1][y];
+						mincg2 = contiguousMap[x - 1][y];
+					}
+
+					if ((mincg1 != 0) && (mincg2 != 0)) {
+						contiguousMap[x][y] = Math.min(mincg1, mincg2);
+					}
+				}
+			}
+		}
+
+		int contiguousAreaCount = i;
+
+		// Step 2a - merge rivers
+		for (int x = 1; x < worldW - 1; x++) {
+			for (int y = 1; y < worldH - 1; y++) {
+				if (worldTile[x][y].tileType == TileType.River) {
+					contiguousMap[x][y] = 1;
+				}
+			}
+		}
+
+		// Step 2b - merge groups
+		for (int x = 1; x < worldW - 1; x++) {
+			for (int y = 1; y < worldH - 1; y++) {
+
+				for (int x2 = -1; x2 <= 1; x2++) {
+					for (int y2 = -1; y2 <= 1; y2++) {
+						if (x2 != 0 || y2 != 0) {
+							if (contiguousMap[x][y] != contiguousMap[x + x2][y
+									+ y2]) {
+								if (isContiguous(worldTile[x][y], worldTile[x
+										+ x2][y + y2])) {
+									final int adjust = contiguousMap[x + x2][y
+											+ y2];
+									for (int x3 = 0; x3 < worldW; x3++) {
+										for (int y3 = 0; y3 < worldH; y3++) {
+											if (contiguousMap[x3][y3] == adjust) {
+												contiguousMap[x3][y3] = contiguousMap[x][y];
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+
+			}
+		}
+
+		// Stage 3 - reduce groups (This bit is very unoptimised and I don't
+		// think does the job completely)
+		int limit = 0;
+		int lowest = worldW * worldH + 1;
+		boolean done = false;
+		do {
+			done = true;
+
+			for (int x = 0; x < worldW; x++) {
+				for (int y = 0; y < worldH; y++) {
+					if (contiguousMap[x][y] < lowest
+							&& contiguousMap[x][y] > limit) {
+						lowest = contiguousMap[x][y];
+					}
+				}
+			}
+
+			for (int x = 0; x < worldW; x++) {
+				for (int y = 0; y < worldH; y++) {
+					if (lowest == contiguousMap[x][y]) {
+						contiguousMap[x][y] = limit + 1;
+						done = false;
+					}
+				}
+			}
+			if (lowest == limit + 1) {
+				limit++;
+			}
+		} while (!done);
+
+		contiguousAreaCount = limit;
+
 	}
 }
