@@ -204,7 +204,12 @@ public class WorldGenerator {
 
 	public WorldGenerator(final int width, final int height,
 			final Hemisphere hemisphere) {
-		r = new Random();
+		this(width, height, hemisphere, new Random());
+	}
+
+	public WorldGenerator(final int width, final int height,
+			final Hemisphere hemisphere, final Random r) {
+		this.r = r;
 		do {
 			createWorld(width, height);
 		} while (getLandMassPercent() < 0.15 || getAverageElevation() < 0.1);
