@@ -9,7 +9,7 @@
 
   <groupId>net.avh4.rpg.generators</groupId>
   <artifactId>hero-extant</artifactId>
-  <version>0.0.1</version>
+  <version>0.0.2-SNAPSHOT</version>
   <packaging>jar</packaging>
 
   <name>hero-extant</name>
