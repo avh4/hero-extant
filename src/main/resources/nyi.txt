@@ -1,4 +1,0 @@
-
-This is an early release; this feature is not yet implemented.
-
-Currently you may only generate new worlds.
