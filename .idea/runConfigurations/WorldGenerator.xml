@@ -1,7 +1,7 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="WorldGenerator" type="Application" factoryName="Application">
     <option name="MAIN_CLASS_NAME" value="net.avh4.rpg.generators.heroextant.WorldGenerator" />
-    <option name="VM_PARAMETERS" value="" />
+    <option name="VM_PARAMETERS" value="-Djava.awt.headless=true" />
     <option name="PROGRAM_PARAMETERS" value="" />
     <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$" />
     <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
@@ -11,6 +11,8 @@
     <option name="PASS_PARENT_ENVS" value="true" />
     <module name="hero-extant" />
     <envs />
+    <RunnerSettings RunnerId="Run" />
+    <ConfigurationWrapper RunnerId="Run" />
     <method />
   </configuration>
 </component>

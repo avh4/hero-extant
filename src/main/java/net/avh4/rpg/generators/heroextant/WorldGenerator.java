@@ -1,5 +1,7 @@
 package net.avh4.rpg.generators.heroextant;
 
+import net.avh4.rpg.generators.heroextant.datastore.MemoryDataStore;
+
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -59,7 +61,7 @@ public class WorldGenerator {
 	private static double WIND_OFFSET = 180;
 	private static int WIND_PARITY = -1; // -1 or 1
 
-	private Tile worldTile[][];
+    private final DataStore data;
 	//
 	// // Wind and rain!
 	// wind: Array[MAX_WIND_X, MAX_WIND_Y] of Real // elevation
@@ -101,7 +103,7 @@ public class WorldGenerator {
 		for (int y = 0; y < worldH; y++) {
 			for (int x = 0; x < worldW; x++) {
 				int gid = 0;
-				switch (getTileType(y, x)) {
+				switch (getTileType(x, y)) {
 				case Sea:
 					gid = 21 - (int) (getElevation(x, y) / SEA_LEVEL * 3);
 					break;
@@ -165,7 +167,7 @@ public class WorldGenerator {
 	private Color colorFromTileTypeAndElevation(final int y, final int x) {
 		final float e = (float) getElevation(x, y);
 		Color c;
-		switch (getTileType(y, x)) {
+		switch (getTileType(x, y)) {
 		case Undefined:
 			c = new Color(e, 0, 0);
 			break;
@@ -208,15 +210,26 @@ public class WorldGenerator {
 				contiguousMap[x][y] * 40 % 256, contiguousMap[x][y] * 40 % 256);
 	}
 
-	public WorldGenerator(final int width, final int height,
-			final Hemisphere hemisphere) {
-		this(width, height, hemisphere, new Random());
-	}
+    public WorldGenerator(final int width, final int height,
+                          final Hemisphere hemisphere) {
+        this(width, height, hemisphere, new MemoryDataStore());
+    }
 
-	public WorldGenerator(final int width, final int height,
-			final Hemisphere hemisphere, final Random r) {
+    public WorldGenerator(final int width, final int height,
+                          final Hemisphere hemisphere, DataStore data) {
+		this(width, height, hemisphere, new Random(), data);
+    }
+
+    public WorldGenerator(final int width, final int height,
+                          final Hemisphere hemisphere, final Random r) {
+        this(width, height, hemisphere, r, new MemoryDataStore());
+    }
+
+    public WorldGenerator(final int width, final int height,
+                          final Hemisphere hemisphere, final Random r, DataStore data) {
 		this.r = r;
-		do {
+        this.data = data;
+        do {
 			createWorld(width, height);
 		} while (getLandMassPercent() < 0.15 || getAverageElevation() < 0.1);
 		calculateTemperatures(hemisphere);
@@ -234,30 +247,30 @@ public class WorldGenerator {
 		for (int y = 0; y < worldH; y++) {
 			for (int x = 0; x < worldW; x++) {
 				if (getElevation(x, y) <= SEA_LEVEL) {
-					setTileType(y, x, TileType.Sea);
+					setTileType(x, y, TileType.Sea);
 				} else if (getTemperature(x, y) < 0.15) {
-					setTileType(y, x, TileType.Frozen);
-				} else if (getTileType(y, x) == TileType.River) {
+					setTileType(x, y, TileType.Frozen);
+				} else if (getTileType(x, y) == TileType.River) {
 					; // already a river
 				} else if (getElevation(x, y) > 0.666) {
 					if (getTemperature(x, y) <= 0.15) {
-						setTileType(y, x, TileType.Frozen);
+						setTileType(x, y, TileType.Frozen);
 					} else if (getRainfall(x, y) < 0.4) {
-						setTileType(y, x, TileType.BarrenMountain);
+						setTileType(x, y, TileType.BarrenMountain);
 					} else {
-						setTileType(y, x, TileType.GreenMountain);
+						setTileType(x, y, TileType.GreenMountain);
 					}
 				} else if (getRainfall(x, y) < 0.150) {
-					setTileType(y, x, TileType.Desert);
+					setTileType(x, y, TileType.Desert);
 				} else if (getRainfall(x, y) < 0.250) {
-					setTileType(y, x, TileType.Grassland);
+					setTileType(x, y, TileType.Grassland);
 				} else if (getRainfall(x, y) < 0.325) {
-					setTileType(y, x, TileType.Forest);
+					setTileType(x, y, TileType.Forest);
 				} else if (getRainfall(x, y) <= 1.0) {
 					if (getTemperature(x, y) > 0.3) {
-						setTileType(y, x, TileType.Jungle);
+						setTileType(x, y, TileType.Jungle);
 					} else {
-						setTileType(y, x, TileType.Forest);
+						setTileType(x, y, TileType.Forest);
 					}
 				}
 			}
@@ -393,9 +406,9 @@ public class WorldGenerator {
 		// Make rivers
 		for (int y = 0; y < worldH; y++) {
 			for (int x = 0; x < worldW; x++) {
-				if (getWaterSaturation(y, x) > 0) {
+				if (getWaterSaturation(x, y) > 0) {
                     TileType tileType = TileType.River;
-                    setTileType(y, x, tileType);
+                    setTileType(x, y, tileType);
                 }
 			}
 		}
@@ -590,13 +603,7 @@ public class WorldGenerator {
 		// World Globals
 		worldWindDir = r.nextDouble() * 360;
 
-		// Init tiles
-		worldTile = new Tile[w][h];
-		for (int x = 0; x < w; x++) {
-			for (int y = 0; y < h; y++) {
-				worldTile[x][y] = new Tile();
-			}
-		}
+        data.init(w, h);
 
 		// Recursively divide for Random fractal landscape
 		divideWorld(0, 0, worldW - 1, worldH - 1, roughness, elevation);
@@ -671,19 +678,19 @@ public class WorldGenerator {
 		int i = 2;
 		for (int y = 1; y < worldH; y++) {
 			for (int x = 1; x < worldW; x++) {
-                if (!(getTileType(y, x) == getTileType(y, x - 1))
-						&& !(getTileType(y, x) == getTileType(y - 1, x))) {
+                if (!(getTileType(x, y) == getTileType(x - 1, y))
+						&& !(getTileType(x, y) == getTileType(x, y - 1))) {
 					contiguousMap[x][y] = i;
 					i++;
 				} else {
 					int mincg1 = 0;
 					int mincg2 = 0;
 
-                    if (getTileType(y, x) == getTileType(y - 1, x)) {
+                    if (getTileType(x, y) == getTileType(x, y - 1)) {
 						contiguousMap[x][y] = contiguousMap[x][y - 1];
 						mincg1 = contiguousMap[x][y - 1];
 					}
-                    if (getTileType(y, x) == getTileType(y, x - 1)) {
+                    if (getTileType(x, y) == getTileType(x - 1, y)) {
 						contiguousMap[x][y] = contiguousMap[x - 1][y];
 						mincg2 = contiguousMap[x - 1][y];
 					}
@@ -700,7 +707,7 @@ public class WorldGenerator {
 		// Step 2a - merge rivers
 		for (int x = 1; x < worldW - 1; x++) {
 			for (int y = 1; y < worldH - 1; y++) {
-				if (getTileType(y, x) == TileType.River) {
+				if (getTileType(x, y) == TileType.River) {
 					contiguousMap[x][y] = 1;
 				}
 			}
@@ -715,8 +722,8 @@ public class WorldGenerator {
 						if (x2 != 0 || y2 != 0) {
 							if (contiguousMap[x][y] != contiguousMap[x + x2][y
 									+ y2]) {
-                                if (getTileType(y, x) == getTileType(y + y2, x
-                                        + x2)) {
+                                if (getTileType(x, y) == getTileType(x
+                                        + x2, y + y2)) {
 									final int adjust = contiguousMap[x + x2][y
 											+ y2];
 									for (int x3 = 0; x3 < worldW; x3++) {
@@ -770,51 +777,51 @@ public class WorldGenerator {
 	}
 
     public TileType getTerrainAtLocation(final int x, final int y) {
-		return getTileType(y, x);
+		return getTileType(x, y);
 	}
 
-    private void setRainfall(int x, int y, double rlost1) {
-        worldTile[x][y].rainfall = rlost1;
+    private void setRainfall(int x, int y, double rainfall) {
+        data.setRainfall(x, y, rainfall);
     }
 
     private void setWindz(int x, int y, double windz) {
-        worldTile[x][y].windz = windz;
+        data.setWindz(x, y, windz);
     }
 
     private void setTemperature(int x, int y, double v) {
-        worldTile[x][y].temperature = v;
+        data.setTemperature(x, y, v);
     }
 
     private double getTemperature(int x, int y) {
-        return worldTile[x][y].temperature;
+        return data.getTemperature(x, y);
     }
 
     private void setElevation(int x, int y, double v) {
-        worldTile[x][y].elevation = v;
+        data.setElevation(x, y, v);
     }
 
     private double getElevation(int x, int y) {
-        return worldTile[x][y].elevation;
+        return data.getElevation(x, y);
     }
 
     private double getRainfall(int x, int y) {
-        return worldTile[x][y].rainfall;
+        return data.getRainfall(x, y);
     }
 
     private void setWaterSaturation(int x, int y, int waterSaturation) {
-        worldTile[x][y].waterSaturation = waterSaturation;
+        data.setWaterSaturation(x, y, waterSaturation);
     }
 
-    private int getWaterSaturation(int y, int x) {
-        return worldTile[x][y].waterSaturation;
+    private int getWaterSaturation(int x, int y) {
+        return data.getWaterSaturation(x, y);
     }
 
-    private void setTileType(int y, int x, TileType tileType) {
-        worldTile[x][y].tileType = tileType;
+    private void setTileType(int x, int y, TileType tileType) {
+        data.setTileType(x, y, tileType);
     }
 
-    private TileType getTileType(int y, int x) {
-        return worldTile[x][y].tileType;
+    private TileType getTileType(int x, int y) {
+        return data.getTileType(x, y);
     }
 
 

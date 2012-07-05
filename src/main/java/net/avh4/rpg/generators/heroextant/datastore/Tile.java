@@ -1,4 +1,6 @@
-package net.avh4.rpg.generators.heroextant;
+package net.avh4.rpg.generators.heroextant.datastore;
+
+import net.avh4.rpg.generators.heroextant.TileType;
 
 public class Tile {
 	TileType tileType = TileType.Undefined;
