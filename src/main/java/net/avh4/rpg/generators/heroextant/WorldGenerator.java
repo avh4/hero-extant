@@ -14,10 +14,8 @@ import java.util.Random;
 
 public class WorldGenerator {
 
-	// WGEN_BIN_COMPAT_ID = 2
-	//
-	private static int MAX_WORLD_X = 2048 * 2;
-	private static int MAX_WORLD_Y = MAX_WORLD_X;
+	private static final int MAX_WORLD_X = 2048 * 2;
+	private static final int MAX_WORLD_Y = MAX_WORLD_X;
 
 	// MAX_WORLD_SUMSQR = 0 + ((MAX_WORLD_X * MAX_WORLD_X) + (MAX_WORLD_Y *
 	// MAX_WORLD_Y))
@@ -26,26 +24,6 @@ public class WorldGenerator {
 	// MAX_WIND_Y = MAX_WIND_X
 	//
 	// PRECOMPRESS_ABS_OFFSET = 1073741824 // (1 Shl 30)
-	//
-	// TILE_FLAG_GRASSLAND = 1
-	// TILE_FLAG_FOREST = 2
-	// TILE_FLAG_JUNGLE = 4
-	// TILE_FLAG_DESERT = 8
-	// TILE_FLAG_GREEN_MOUNTAIN = 16
-	// TILE_FLAG_BARREN_MOUNTAIN = 32
-	// TILE_FLAG_FROZEN = 64
-	//
-	// WGEN_PREVIEW_ELEVATION = 1 ; export
-	// WGEN_PREVIEW_COLOR = 2 ; export
-	// WGEN_PREVIEW_WIND = 4 ; export
-	// WGEN_PREVIEW_RAINFALL = 8 ; export
-	// WGEN_PREVIEW_SEALEVEL = 16 ; export
-	// WGEN_PREVIEW_TEMPERATURE = 32 ; export
-	// WGEN_PREVIEW_RIVERS = 64 ; export
-	// WGEN_PREVIEW_COLOR_ELEVATION = 128 ; export
-	// WGEN_PREVIEW_CONTIGUOUS = 256 ; export
-	// WGEN_PREVIEW_TEMPERATURE_RAW = 512 ; export
-	//
 	//
 	private static double SEA_LEVEL = 0.333;
 	private static double WIND_GRAVITY = 0.975;
@@ -62,22 +40,13 @@ public class WorldGenerator {
 	private static int WIND_PARITY = -1; // -1 or 1
 
     private final DataStore data;
-	//
-	// // Wind and rain!
-	// wind: Array[MAX_WIND_X, MAX_WIND_Y] of Real // elevation
-	// windr: Array[MAX_WIND_X, MAX_WIND_Y] of Real // rainfall
-	// windx, windy: Real
-	// windw, windh: Integer
-	//
+
 	private int[][] contiguousMap;
 
 	private int worldW;
 	private int worldH;
 	private double worldWindDir;
 	private final Random r;
-
-	//
-	// resultString: String = "" ; export
 
 	public static void main(final String[] args) throws IOException {
 		final WorldGenerator w = new WorldGenerator(800, 600, Hemisphere.North);
@@ -419,11 +388,11 @@ public class WorldGenerator {
 
     /**
 	 * Orographic effect:
-	 * 
+	 *
 	 * # Warm, moist air carried in by wind<br/>
 	 * # Mountains forces air upwards, where it cools and condenses (rains)<br/>
 	 * # The leeward side of the mountain is drier and casts a "rain shadow".
-	 * 
+	 *
 	 * Wind is modeled here as a square of particles of area<br/>
 	 * worldW * worldH<br/>
 	 * and<br/>
