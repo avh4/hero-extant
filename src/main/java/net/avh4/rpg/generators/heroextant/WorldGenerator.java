@@ -1,7 +1,7 @@
 package net.avh4.rpg.generators.heroextant;
 
-import java.awt.Color;
-import java.awt.Graphics2D;
+import javax.imageio.ImageIO;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileWriter;
@@ -9,8 +9,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-
-import javax.imageio.ImageIO;
 
 public class WorldGenerator {
 
@@ -103,9 +101,9 @@ public class WorldGenerator {
 		for (int y = 0; y < worldH; y++) {
 			for (int x = 0; x < worldW; x++) {
 				int gid = 0;
-				switch (worldTile[x][y].tileType) {
+				switch (getTileType(y, x)) {
 				case Sea:
-					gid = 21 - (int) (worldTile[x][y].elevation / SEA_LEVEL * 3);
+					gid = 21 - (int) (getElevation(x, y) / SEA_LEVEL * 3);
 					break;
 				case Grassland:
 					gid = 10;
@@ -145,7 +143,7 @@ public class WorldGenerator {
 		fw.close();
 	}
 
-	private void renderWorldToPng(final String filename) throws IOException {
+    private void renderWorldToPng(final String filename) throws IOException {
 		final BufferedImage tmpImg = new BufferedImage(worldW, worldH,
 				BufferedImage.TYPE_INT_RGB);
 		final Graphics2D g = tmpImg.createGraphics();
@@ -165,9 +163,9 @@ public class WorldGenerator {
 	}
 
 	private Color colorFromTileTypeAndElevation(final int y, final int x) {
-		final float e = (float) worldTile[x][y].elevation;
+		final float e = (float) getElevation(x, y);
 		Color c;
-		switch (worldTile[x][y].tileType) {
+		switch (getTileType(y, x)) {
 		case Undefined:
 			c = new Color(e, 0, 0);
 			break;
@@ -204,7 +202,7 @@ public class WorldGenerator {
 		return c;
 	}
 
-	@SuppressWarnings("unused")
+    @SuppressWarnings("unused")
 	private Color colorFromRegion(final int y, final int x) {
 		return new Color(contiguousMap[x][y] * 40 % 256,
 				contiguousMap[x][y] * 40 % 256, contiguousMap[x][y] * 40 % 256);
@@ -235,31 +233,31 @@ public class WorldGenerator {
 	private void determineWorldTerrainTypes() {
 		for (int y = 0; y < worldH; y++) {
 			for (int x = 0; x < worldW; x++) {
-				if (worldTile[x][y].elevation <= SEA_LEVEL) {
-					worldTile[x][y].tileType = TileType.Sea;
-				} else if (worldTile[x][y].temperature < 0.15) {
-					worldTile[x][y].tileType = TileType.Frozen;
-				} else if (worldTile[x][y].tileType == TileType.River) {
+				if (getElevation(x, y) <= SEA_LEVEL) {
+					setTileType(y, x, TileType.Sea);
+				} else if (getTemperature(x, y) < 0.15) {
+					setTileType(y, x, TileType.Frozen);
+				} else if (getTileType(y, x) == TileType.River) {
 					; // already a river
-				} else if (worldTile[x][y].elevation > 0.666) {
-					if (worldTile[x][y].temperature <= 0.15) {
-						worldTile[x][y].tileType = TileType.Frozen;
-					} else if (worldTile[x][y].rainfall < 0.4) {
-						worldTile[x][y].tileType = TileType.BarrenMountain;
+				} else if (getElevation(x, y) > 0.666) {
+					if (getTemperature(x, y) <= 0.15) {
+						setTileType(y, x, TileType.Frozen);
+					} else if (getRainfall(x, y) < 0.4) {
+						setTileType(y, x, TileType.BarrenMountain);
 					} else {
-						worldTile[x][y].tileType = TileType.GreenMountain;
+						setTileType(y, x, TileType.GreenMountain);
 					}
-				} else if (worldTile[x][y].rainfall < 0.150) {
-					worldTile[x][y].tileType = TileType.Desert;
-				} else if (worldTile[x][y].rainfall < 0.250) {
-					worldTile[x][y].tileType = TileType.Grassland;
-				} else if (worldTile[x][y].rainfall < 0.325) {
-					worldTile[x][y].tileType = TileType.Forest;
-				} else if (worldTile[x][y].rainfall <= 1.0) {
-					if (worldTile[x][y].temperature > 0.3) {
-						worldTile[x][y].tileType = TileType.Jungle;
+				} else if (getRainfall(x, y) < 0.150) {
+					setTileType(y, x, TileType.Desert);
+				} else if (getRainfall(x, y) < 0.250) {
+					setTileType(y, x, TileType.Grassland);
+				} else if (getRainfall(x, y) < 0.325) {
+					setTileType(y, x, TileType.Forest);
+				} else if (getRainfall(x, y) <= 1.0) {
+					if (getTemperature(x, y) > 0.3) {
+						setTileType(y, x, TileType.Jungle);
 					} else {
-						worldTile[x][y].tileType = TileType.Forest;
+						setTileType(y, x, TileType.Forest);
 					}
 				}
 			}
@@ -267,7 +265,7 @@ public class WorldGenerator {
 
 	}
 
-	private void calculateWaterFlow() {
+    private void calculateWaterFlow() {
 		int steps = 0;
 		final double maxSteps = Math
 				.sqrt((worldW * worldW) + (worldH * worldH)) / 2;
@@ -279,9 +277,9 @@ public class WorldGenerator {
 		for (int i = 0; i < maxSteps * 8; i++) {
 			final int x = r.nextInt(worldW - 3) + 1;
 			final int y = r.nextInt(worldH - 3) + 1;
-			if (worldTile[x][y].elevation > SEA_LEVEL
-					&& worldTile[x][y].elevation < 1.0) {
-				if (r.nextDouble() * worldTile[x][y].rainfall > 0.125) {
+			if (getElevation(x, y) > SEA_LEVEL
+					&& getElevation(x, y) < 1.0) {
+				if (r.nextDouble() * getRainfall(x, y) > 0.125) {
 					final River river = new River();
 					riverList.add(river);
 					river.x = x;
@@ -306,7 +304,7 @@ public class WorldGenerator {
 				final int x = river.x;
 				final int y = river.y;
 
-				if (worldTile[x][y].elevation > SEA_LEVEL && (x > 0) && (y > 0)
+				if (getElevation(x, y) > SEA_LEVEL && (x > 0) && (y > 0)
 						&& (x < worldW - 1) && (y < worldH - 1)) {
 					// Water flows based on cost, seeking the highest elevation
 					// difference
@@ -329,22 +327,22 @@ public class WorldGenerator {
 					// Top
 					// cost[0][0] = ((worldTile[x - 1][y - 1].elevation) -
 					// (worldTile[x][y].elevation)); // 1.41
-					cost[1][0] = (worldTile[x][y - 1].elevation)
-							- (worldTile[x][y].elevation);
+					cost[1][0] = (getElevation(x, y - 1))
+							- (getElevation(x, y));
 					// cost[2][0] = ((worldTile[x + 1][y - 1].elevation) -
 					// (worldTile[x][y].elevation)); // 1.41
 
 					// Mid
-					cost[0][1] = (worldTile[x - 1][y].elevation)
-							- (worldTile[x][y].elevation);
-					cost[2][1] = (worldTile[x + 1][y].elevation)
-							- (worldTile[x][y].elevation);
+					cost[0][1] = (getElevation(x - 1, y))
+							- (getElevation(x, y));
+					cost[2][1] = (getElevation(x + 1, y))
+							- (getElevation(x, y));
 
 					// Bottom
 					// cost[0][2] = ((worldTile[x - 1][y + 1].elevation) -
 					// (worldTile[x][y].elevation)); // 1.41
-					cost[1][2] = (worldTile[x][y + 1].elevation)
-							- (worldTile[x][y].elevation);
+					cost[1][2] = (getElevation(x, y + 1))
+							- (getElevation(x, y));
 					// cost[2][2] = ((worldTile[x + 1][y + 1].elevation) -
 					// (worldTile[x][y].elevation)); // 1.41
 
@@ -378,8 +376,8 @@ public class WorldGenerator {
 								if (cost[i][j] == highestCost) {
 									river.x = x + (i - 1);
 									river.y = y + (j - 1);
-									worldTile[x][y].waterSaturation = 1;
-									moves++;
+                                    setWaterSaturation(x, y, 1);
+                                    moves++;
 								}
 							}
 						}
@@ -395,9 +393,10 @@ public class WorldGenerator {
 		// Make rivers
 		for (int y = 0; y < worldH; y++) {
 			for (int x = 0; x < worldW; x++) {
-				if (worldTile[x][y].waterSaturation > 0) {
-					worldTile[x][y].tileType = TileType.River;
-				}
+				if (getWaterSaturation(y, x) > 0) {
+                    TileType tileType = TileType.River;
+                    setTileType(y, x, tileType);
+                }
 			}
 		}
 
@@ -405,7 +404,7 @@ public class WorldGenerator {
 		// resultString = "Moves: "+ToString(countMoves)
 	}
 
-	/**
+    /**
 	 * Orographic effect:
 	 * 
 	 * # Warm, moist air carried in by wind<br/>
@@ -454,13 +453,13 @@ public class WorldGenerator {
 					if (windx + x > -1 && windy + y > -1) {
 						if (windx + x < worldW && windy + y < worldH) {
 
-							final double windz = worldTile[(int) (windx + x)][(int) (windy + y)].elevation;
+							final double windz = getElevation((int) (windx + x), (int) (windy + y));
 							wind[x][y] = Math.max(wind[x][y] * WIND_GRAVITY,
 									windz);
 
 							final double rainRemaining = windr[x][y]
 									/ (((rainfall * mapsqrt) / WIND_RESOLUTION) * RAIN_FALLOFF)
-									* (1.0 - (worldTile[x][y].temperature / 2.0));
+									* (1.0 - (getTemperature(x, y) / 2.0));
 							double rlost = (wind[x][y]) * rainRemaining;
 							if (rlost < 0) {
 								rlost = 0;
@@ -470,9 +469,9 @@ public class WorldGenerator {
 								windr[x][y] = 0;
 							}
 
-							worldTile[(int) (windx + x)][(int) (windy + y)].windz = wind[x][y];
-							worldTile[(int) (windx + x)][(int) (windy + y)].rainfall = rlost;
-						}
+                            setWindz((int) (windx + x), (int) (windy + y), wind[x][y]);
+                            setRainfall((int) (windx + x), (int) (windy + y), rlost);
+                        }
 					}
 
 				}
@@ -482,7 +481,7 @@ public class WorldGenerator {
 
 	}
 
-	private void calculateTemperatures(final Hemisphere hemisphere) {
+    private void calculateTemperatures(final Hemisphere hemisphere) {
 		for (int i = 0; i < worldH; i += TEMPERATURE_BAND_RESOLUTION) {
 
 			// Generate band
@@ -540,16 +539,16 @@ public class WorldGenerator {
 			for (int x = 0; x < worldW; x++) {
 				for (int y = 0; y < worldH; y++) {
 
-					if (worldTile[x][y].elevation < SEA_LEVEL) {
+					if (getElevation(x, y) < SEA_LEVEL) {
 						// Water tiles
 						if (y > band[x]) {
-							worldTile[x][y].temperature = bandtemp * 0.7;
-						}
+                            setTemperature(x, y, bandtemp * 0.7);
+                        }
 					} else {
 						// Land tiles
 						if (y > band[x]) {
-							worldTile[x][y].temperature = bandtemp
-									* (1.0 - (worldTile[x][y].elevation - SEA_LEVEL));
+							setTemperature(x, y, bandtemp
+									* (1.0 - (getElevation(x, y) - SEA_LEVEL)));
 						}
 					}
 				}
@@ -558,7 +557,7 @@ public class WorldGenerator {
 
 	}
 
-	private float getAverageElevation() {
+    private float getAverageElevation() {
 		// TODO Auto-generated method stub
 		return .5f;
 	}
@@ -606,22 +605,22 @@ public class WorldGenerator {
 		for (int x = 0; x < w; x++) {
 			for (int y = 0; y < h; y++) {
 				if (x == 0) {
-					worldTile[x][y].elevation = 0;
+					setElevation(x, y, 0);
 				}
 				if (y == 0) {
-					worldTile[x][y].elevation = 0;
+					setElevation(x, y, 0);
 				}
 				if (x == w - 1) {
-					worldTile[x][y].elevation = 0;
+					setElevation(x, y, 0);
 				}
 				if (y == h - 1) {
-					worldTile[x][y].elevation = 0;
+					setElevation(x, y, 0);
 				}
-				if (worldTile[x][y].elevation > 1) {
-					worldTile[x][y].elevation = 1;
+				if (getElevation(x, y) > 1) {
+					setElevation(x, y, 1);
 				}
-				if (worldTile[x][y].elevation < 0) {
-					worldTile[x][y].elevation = 0;
+				if (getElevation(x, y) < 0) {
+					setElevation(x, y, 0);
 				}
 			}
 		}
@@ -639,17 +638,17 @@ public class WorldGenerator {
 
 		if (w > 1 || h > 1) {
 
-			worldTile[midx][y1].elevation = (worldTile[x1][y1].elevation + worldTile[x2][y1].elevation) / 2;
-			worldTile[midx][y2].elevation = (worldTile[x1][y2].elevation + worldTile[x2][y2].elevation) / 2;
-			worldTile[x1][midy].elevation = (worldTile[x1][y1].elevation + worldTile[x1][y2].elevation) / 2;
-			worldTile[x2][midy].elevation = (worldTile[x2][y1].elevation + worldTile[x2][y2].elevation) / 2;
-			worldTile[midx][midy].elevation = d
-					+ ((worldTile[x1][y1].elevation
-							+ worldTile[x1][y2].elevation
-							+ worldTile[x2][y1].elevation + worldTile[x2][y2].elevation) / 4);
+            setElevation(midx, y1, (getElevation(x1, y1) + getElevation(x2, y1)) / 2);
+            setElevation(midx, y2, (getElevation(x1, y2) + getElevation(x2, y2)) / 2);
+			setElevation(x1, midy, (getElevation(x1, y1) + getElevation(x1, y2)) / 2);
+			setElevation(x2, midy, (getElevation(x2, y1) + getElevation(x2, y2)) / 2);
+			setElevation(midx, midy, d
+					+ ((getElevation(x1, y1)
+							+ getElevation(x1, y2)
+							+ getElevation(x2, y1) + getElevation(x2, y2)) / 4));
 
 			if (midinit > -1) {
-				worldTile[midx][midy].elevation = midinit;
+				setElevation(midx, midy, midinit);
 			}
 
 			divideWorld(x1, y1, midx, midy, roughness, -1);
@@ -660,11 +659,7 @@ public class WorldGenerator {
 		}
 	}
 
-	private boolean isContiguous(final Tile a, final Tile b) {
-		return a.tileType == b.tileType;
-	}
-
-	private void determineContiguousAreas() {
+    private void determineContiguousAreas() {
 		contiguousMap = new int[worldW][worldH];
 		for (int y = 0; y < worldH; y++) {
 			for (int x = 0; x < worldW; x++) {
@@ -676,19 +671,19 @@ public class WorldGenerator {
 		int i = 2;
 		for (int y = 1; y < worldH; y++) {
 			for (int x = 1; x < worldW; x++) {
-				if (!isContiguous(worldTile[x][y], worldTile[x - 1][y])
-						&& !isContiguous(worldTile[x][y], worldTile[x][y - 1])) {
+                if (!(getTileType(y, x) == getTileType(y, x - 1))
+						&& !(getTileType(y, x) == getTileType(y - 1, x))) {
 					contiguousMap[x][y] = i;
 					i++;
 				} else {
 					int mincg1 = 0;
 					int mincg2 = 0;
 
-					if (isContiguous(worldTile[x][y], worldTile[x][y - 1])) {
+                    if (getTileType(y, x) == getTileType(y - 1, x)) {
 						contiguousMap[x][y] = contiguousMap[x][y - 1];
 						mincg1 = contiguousMap[x][y - 1];
 					}
-					if (isContiguous(worldTile[x][y], worldTile[x - 1][y])) {
+                    if (getTileType(y, x) == getTileType(y, x - 1)) {
 						contiguousMap[x][y] = contiguousMap[x - 1][y];
 						mincg2 = contiguousMap[x - 1][y];
 					}
@@ -705,7 +700,7 @@ public class WorldGenerator {
 		// Step 2a - merge rivers
 		for (int x = 1; x < worldW - 1; x++) {
 			for (int y = 1; y < worldH - 1; y++) {
-				if (worldTile[x][y].tileType == TileType.River) {
+				if (getTileType(y, x) == TileType.River) {
 					contiguousMap[x][y] = 1;
 				}
 			}
@@ -720,8 +715,8 @@ public class WorldGenerator {
 						if (x2 != 0 || y2 != 0) {
 							if (contiguousMap[x][y] != contiguousMap[x + x2][y
 									+ y2]) {
-								if (isContiguous(worldTile[x][y], worldTile[x
-										+ x2][y + y2])) {
+                                if (getTileType(y, x) == getTileType(y + y2, x
+                                        + x2)) {
 									final int adjust = contiguousMap[x + x2][y
 											+ y2];
 									for (int x3 = 0; x3 < worldW; x3++) {
@@ -774,7 +769,53 @@ public class WorldGenerator {
 
 	}
 
-	public TileType getTerrainAtLocation(final int x, final int y) {
-		return worldTile[x][y].tileType;
+    public TileType getTerrainAtLocation(final int x, final int y) {
+		return getTileType(y, x);
 	}
+
+    private void setRainfall(int x, int y, double rlost1) {
+        worldTile[x][y].rainfall = rlost1;
+    }
+
+    private void setWindz(int x, int y, double windz) {
+        worldTile[x][y].windz = windz;
+    }
+
+    private void setTemperature(int x, int y, double v) {
+        worldTile[x][y].temperature = v;
+    }
+
+    private double getTemperature(int x, int y) {
+        return worldTile[x][y].temperature;
+    }
+
+    private void setElevation(int x, int y, double v) {
+        worldTile[x][y].elevation = v;
+    }
+
+    private double getElevation(int x, int y) {
+        return worldTile[x][y].elevation;
+    }
+
+    private double getRainfall(int x, int y) {
+        return worldTile[x][y].rainfall;
+    }
+
+    private void setWaterSaturation(int x, int y, int waterSaturation) {
+        worldTile[x][y].waterSaturation = waterSaturation;
+    }
+
+    private int getWaterSaturation(int y, int x) {
+        return worldTile[x][y].waterSaturation;
+    }
+
+    private void setTileType(int y, int x, TileType tileType) {
+        worldTile[x][y].tileType = tileType;
+    }
+
+    private TileType getTileType(int y, int x) {
+        return worldTile[x][y].tileType;
+    }
+
+
 }
