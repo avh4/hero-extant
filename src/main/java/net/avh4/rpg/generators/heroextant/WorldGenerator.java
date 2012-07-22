@@ -30,15 +30,13 @@ public class WorldGenerator implements MapGenerationPhase {
     private int worldH;
     private final Random r;
     private final MapData<Double> elevation;
-    private final MapData<Double> temperature;
-    private final MapData<Double> rainfall;
     private final MapData<TileType> tiles;
-    private final MapData<Integer> waterSaturation;
 
     private final ElevationGenerationPhase elevationGeneration;
     private final TemperatureGenerationPhase temperatureGeneration;
     private final WindRainfallGenerationPhase windRainfallGeneration;
     private final RiverGenerationPhase riverGeneration;
+    private final TerrainGenerationPhase terrainGeneration;
 
     public static void main(final String[] args) throws IOException {
         final int w = 800;
@@ -193,14 +191,12 @@ public class WorldGenerator implements MapGenerationPhase {
         this.worldH = height;
         this.r = r;
         this.elevation = elevation;
-        this.temperature = temperature;
-        this.rainfall = rainfall;
         this.tiles = tiles;
-        this.waterSaturation = waterSaturation;
         elevationGeneration = new ElevationGenerationPhase(r, elevation);
         temperatureGeneration = new TemperatureGenerationPhase(r, hemisphere, elevation, temperature);
         windRainfallGeneration = new WindRainfallGenerationPhase(r, elevation, temperature, rainfall, windz);
         riverGeneration = new RiverGenerationPhase(r, elevation, rainfall, waterSaturation);
+        terrainGeneration = new TerrainGenerationPhase(elevation, temperature, rainfall, waterSaturation, tiles);
     }
 
     @Override
@@ -211,46 +207,8 @@ public class WorldGenerator implements MapGenerationPhase {
         temperatureGeneration.execute();
         windRainfallGeneration.execute();
         riverGeneration.execute();
-        determineWorldTerrainTypes();
+        terrainGeneration.execute();
         determineContiguousAreas();
-    }
-
-    /**
-     * Attempt to classify each temperature/rain/waterSaturation combo as a
-     * terrain type
-     */
-    private void determineWorldTerrainTypes() {
-        for (int y = 0; y < worldH; y++) {
-            for (int x = 0; x < worldW; x++) {
-                if (getElevation(x, y) <= SEA_LEVEL) {
-                    setTileType(x, y, TileType.Sea);
-                } else if (getTemperature(x, y) < 0.15) {
-                    setTileType(x, y, TileType.Frozen);
-                } else if (getWaterSaturation(x, y) > 0) {
-                    setTileType(x, y, TileType.River);
-                } else if (getElevation(x, y) > 0.666) {
-                    if (getTemperature(x, y) <= 0.15) {
-                        setTileType(x, y, TileType.Frozen);
-                    } else if (getRainfall(x, y) < 0.4) {
-                        setTileType(x, y, TileType.BarrenMountain);
-                    } else {
-                        setTileType(x, y, TileType.GreenMountain);
-                    }
-                } else if (getRainfall(x, y) < 0.150) {
-                    setTileType(x, y, TileType.Desert);
-                } else if (getRainfall(x, y) < 0.250) {
-                    setTileType(x, y, TileType.Grassland);
-                } else if (getRainfall(x, y) < 0.325) {
-                    setTileType(x, y, TileType.Forest);
-                } else if (getRainfall(x, y) <= 1.0) {
-                    if (getTemperature(x, y) > 0.3) {
-                        setTileType(x, y, TileType.Jungle);
-                    } else {
-                        setTileType(x, y, TileType.Forest);
-                    }
-                }
-            }
-        }
     }
 
     private float getAverageElevation() {
@@ -382,24 +340,8 @@ public class WorldGenerator implements MapGenerationPhase {
         contiguousAreaCount = limit;
     }
 
-    private double getTemperature(int x, int y) {
-        return temperature.getData(x, y, 0.0);
-    }
-
     private double getElevation(int x, int y) {
         return elevation.getData(x, y, 0.0);
-    }
-
-    private double getRainfall(int x, int y) {
-        return rainfall.getData(x, y);
-    }
-
-    private int getWaterSaturation(int x, int y) {
-        return waterSaturation.getData(x, y, 0);
-    }
-
-    private void setTileType(int x, int y, TileType value) {
-        tiles.setData(x, y, value);
     }
 
     private TileType getTileType(int x, int y) {
