@@ -37,8 +37,9 @@ public class WorldGenerator implements MapGenerationPhase {
     private final MapData<TileType> tiles;
     private final MapData<Integer> waterSaturation;
 
-    private final WindRainfallGenerationPhase windRainfallGeneration;
+    private final ElevationGenerationPhase elevationGeneration;
     private final TemperatureGenerationPhase temperatureGeneration;
+    private final WindRainfallGenerationPhase windRainfallGeneration;
 
     public static void main(final String[] args) throws IOException {
         final int w = 800;
@@ -188,6 +189,7 @@ public class WorldGenerator implements MapGenerationPhase {
     public WorldGenerator(int width, int height, Hemisphere hemisphere, Random r, MapData<Double> elevation,
                           MapData<Double> temperature, MapData<Double> windz, MapData<Double> rainfall,
                           MapData<TileType> tiles, MapData<Integer> waterSaturation) {
+        validateWorldSize(width, height);
         this.worldW = width;
         this.worldH = height;
         this.r = r;
@@ -196,6 +198,7 @@ public class WorldGenerator implements MapGenerationPhase {
         this.rainfall = rainfall;
         this.tiles = tiles;
         this.waterSaturation = waterSaturation;
+        elevationGeneration = new ElevationGenerationPhase(r, elevation);
         temperatureGeneration = new TemperatureGenerationPhase(r, hemisphere, elevation, temperature);
         windRainfallGeneration = new WindRainfallGenerationPhase(r, elevation, temperature, rainfall, windz);
     }
@@ -203,7 +206,7 @@ public class WorldGenerator implements MapGenerationPhase {
     @Override
     public void execute() {
         do {
-            createWorld(worldW, worldH);
+            elevationGeneration.execute();
         } while (getLandMassPercent() < 0.15 || getAverageElevation() < 0.1);
         temperatureGeneration.execute();
         windRainfallGeneration.execute();
@@ -397,83 +400,14 @@ public class WorldGenerator implements MapGenerationPhase {
         return .5f;
     }
 
-    private void createWorld(int w, int h) {
-        final double roughness = 100.0 / 20;
-        final double elevation = 100.0 / 200;
-
-        if (w > MAX_WORLD_X) {
-            w = MAX_WORLD_X;
+    private void validateWorldSize(int w, int h) {
+        if (w > MAX_WORLD_X || h > MAX_WORLD_Y) {
+            throw new RuntimeException(String.format("%d x %d is to large. Maximum map size is %d x %d",
+                    w, h, MAX_WORLD_X, MAX_WORLD_Y));
         }
-        if (h > MAX_WORLD_Y) {
-            h = MAX_WORLD_Y;
-        }
-        if (w < 32) {
-            w = 32;
-        }
-        if (h < 32) {
-            h = 32;
-        }
-        worldW = w;
-        worldH = h;
-        final double z = elevation / 100.0;
-
-        // Recursively divide for Random fractal landscape
-        divideWorld(0, 0, worldW - 1, worldH - 1, roughness, elevation);
-
-        // Clamp
-        for (int x = 0; x < w; x++) {
-            for (int y = 0; y < h; y++) {
-                if (x == 0) {
-                    setElevation(x, y, 0);
-                }
-                if (y == 0) {
-                    setElevation(x, y, 0);
-                }
-                if (x == w - 1) {
-                    setElevation(x, y, 0);
-                }
-                if (y == h - 1) {
-                    setElevation(x, y, 0);
-                }
-                if (getElevation(x, y) > 1) {
-                    setElevation(x, y, 1);
-                }
-                if (getElevation(x, y) < 0) {
-                    setElevation(x, y, 0);
-                }
-            }
-        }
-    }
-
-    private void divideWorld(final int x1, final int y1, final int x2,
-                             final int y2, final double roughness, final double midinit) {
-        final int w = x2 - x1;
-        final int h = y2 - y1;
-        final int midx = (x1 + x2) / 2;
-        final int midy = (y1 + y2) / 2;
-
-        double d = (((double) (w + h) / 2) / (worldW + worldH));
-        d = d * (r.nextDouble() * 2 - 1) * roughness;
-
-        if (w > 1 || h > 1) {
-
-            setElevation(midx, y1, (getElevation(x1, y1) + getElevation(x2, y1)) / 2);
-            setElevation(midx, y2, (getElevation(x1, y2) + getElevation(x2, y2)) / 2);
-            setElevation(x1, midy, (getElevation(x1, y1) + getElevation(x1, y2)) / 2);
-            setElevation(x2, midy, (getElevation(x2, y1) + getElevation(x2, y2)) / 2);
-            setElevation(midx, midy, d
-                    + ((getElevation(x1, y1)
-                    + getElevation(x1, y2)
-                    + getElevation(x2, y1) + getElevation(x2, y2)) / 4));
-
-            if (midinit > -1) {
-                setElevation(midx, midy, midinit);
-            }
-
-            divideWorld(x1, y1, midx, midy, roughness, -1);
-            divideWorld(midx, y1, x2, midy, roughness, -1);
-            divideWorld(x1, midy, midx, y2, roughness, -1);
-            divideWorld(midx, midy, x2, y2, roughness, -1);
+        if (w < 32 || h < 32) {
+            throw new RuntimeException(String.format("%d x %d is too small. Minimum map size is 32 x 32",
+                    w, h));
         }
     }
 
@@ -587,10 +521,6 @@ public class WorldGenerator implements MapGenerationPhase {
 
     private double getTemperature(int x, int y) {
         return temperature.getData(x, y, 0.0);
-    }
-
-    private void setElevation(int x, int y, double v) {
-        elevation.setData(x, y, v);
     }
 
     private double getElevation(int x, int y) {
