@@ -22,38 +22,27 @@ public class WorldGenerator implements MapGenerationPhase {
     // MAX_WORLD_SUMSQR = 0 + ((MAX_WORLD_X * MAX_WORLD_X) + (MAX_WORLD_Y *
     // MAX_WORLD_Y))
     //
-    // MAX_WIND_X = MAX_WORLD_X
-    // MAX_WIND_Y = MAX_WIND_X
-    //
     // PRECOMPRESS_ABS_OFFSET = 1073741824 // (1 Shl 30)
     //
     private static double SEA_LEVEL = 0.333;
-    private static double WIND_GRAVITY = 0.975;
-    private static int WIND_RESOLUTION = 4; // 1 is perfect, higher = rougher
     private static int TEMPERATURE_BAND_RESOLUTION = 2; // 1 is perfect, higher
     // = rougher
-    private static double RAIN_FALLOFF = 0.2; // Default 0.2 - less for less
-    // rain, more for
-    // more rain
     // WGEN_MAX_TEMPERATURE = 40
     // WGEN_MIN_TEMPERATURE = -60
-    //
-    private static double WIND_OFFSET = 180;
-    private static int WIND_PARITY = -1; // -1 or 1
 
     private int[][] contiguousMap;
 
     private int worldW;
     private int worldH;
-    private double worldWindDir;
     private final Hemisphere hemisphere;
     private final Random r;
     private final MapData<Double> elevation;
     private final MapData<Double> temperature;
-    private final MapData<Double> windz;
     private final MapData<Double> rainfall;
     private final MapData<TileType> tiles;
     private final MapData<Integer> waterSaturation;
+
+    private final WindRainfallGenerationPhase windRainfallGeneration;
 
     public static void main(final String[] args) throws IOException {
         final int w = 800;
@@ -209,10 +198,10 @@ public class WorldGenerator implements MapGenerationPhase {
         this.r = r;
         this.elevation = elevation;
         this.temperature = temperature;
-        this.windz = windz;
         this.rainfall = rainfall;
         this.tiles = tiles;
         this.waterSaturation = waterSaturation;
+        windRainfallGeneration = new WindRainfallGenerationPhase(r, elevation, temperature, rainfall, windz);
     }
 
     @Override
@@ -221,7 +210,7 @@ public class WorldGenerator implements MapGenerationPhase {
             createWorld(worldW, worldH);
         } while (getLandMassPercent() < 0.15 || getAverageElevation() < 0.1);
         calculateTemperatures(hemisphere);
-        calculateWind();
+        windRainfallGeneration.execute();
         calculateWaterFlow();
         determineWorldTerrainTypes();
         determineContiguousAreas();
@@ -402,80 +391,6 @@ public class WorldGenerator implements MapGenerationPhase {
         // resultString = "Moves: "+ToString(countMoves)
     }
 
-    /**
-     * Orographic effect:
-     * <p/>
-     * # Warm, moist air carried in by wind<br/>
-     * # Mountains forces air upwards, where it cools and condenses (rains)<br/>
-     * # The leeward side of the mountain is drier and casts a "rain shadow".
-     * <p/>
-     * Wind is modeled here as a square of particles of area<br/>
-     * worldW * worldH<br/>
-     * and<br/>
-     * Sqrt(worldW^2+worldH^2) away<br/>
-     * The wind travels in direction of worldWinDir
-     */
-    private void calculateWind() {
-        // Init wind x,y,w,h
-        final double r = Math.sqrt((double) (worldW * worldW)
-                + (double) (worldH * worldH));
-        final double theta1 = worldWindDir * WIND_PARITY + WIND_OFFSET;
-        final double theta2 = 180 - 90 - (worldWindDir * WIND_PARITY + WIND_OFFSET);
-        final double sinT1 = Math.sin(theta1);
-        final double sinT2 = Math.sin(theta2);
-        final int windw = (worldW);
-        final int windh = (worldH);
-        final double mapsqrt = Math.sqrt((worldW * worldW) + (worldH * worldH));
-
-        // Init wind
-        final double[][] wind = new double[windw][windh];
-        final double rainfall = 1.0;
-        final double[][] windr = new double[windw][windh];
-        for (int x = 0; x < windw; x++) {
-            for (int y = 0; y < windh; y++) {
-                wind[x][y] = 0;
-                windr[x][y] = ((rainfall * mapsqrt) / WIND_RESOLUTION)
-                        * RAIN_FALLOFF;
-            }
-        }
-
-        // Cast wind
-        for (double d = r; d >= 0; d -= WIND_RESOLUTION) {
-
-            final double windx = d * sinT1;
-            final double windy = d * sinT2;
-
-            for (int x = 0; x < windw; x++) {
-                for (int y = 0; y < windh; y++) {
-
-                    if (windx + x > -1 && windy + y > -1) {
-                        if (windx + x < worldW && windy + y < worldH) {
-
-                            final double windz = getElevation((int) (windx + x), (int) (windy + y));
-                            wind[x][y] = Math.max(wind[x][y] * WIND_GRAVITY,
-                                    windz);
-
-                            final double rainRemaining = windr[x][y]
-                                    / (((rainfall * mapsqrt) / WIND_RESOLUTION) * RAIN_FALLOFF)
-                                    * (1.0 - (getTemperature(x, y) / 2.0));
-                            double rlost = (wind[x][y]) * rainRemaining;
-                            if (rlost < 0) {
-                                rlost = 0;
-                            }
-                            windr[x][y] = windr[x][y] - rlost;
-                            if (windr[x][y] < 0) {
-                                windr[x][y] = 0;
-                            }
-
-                            setWindz((int) (windx + x), (int) (windy + y), wind[x][y]);
-                            setRainfall((int) (windx + x), (int) (windy + y), rlost);
-                        }
-                    }
-                }
-            }
-        }
-    }
-
     private void calculateTemperatures(final Hemisphere hemisphere) {
         for (int i = 0; i < worldH; i += TEMPERATURE_BAND_RESOLUTION) {
 
@@ -580,9 +495,6 @@ public class WorldGenerator implements MapGenerationPhase {
         worldW = w;
         worldH = h;
         final double z = elevation / 100.0;
-
-        // World Globals
-        worldWindDir = r.nextDouble() * 360;
 
         // Recursively divide for Random fractal landscape
         divideWorld(0, 0, worldW - 1, worldH - 1, roughness, elevation);
@@ -750,14 +662,6 @@ public class WorldGenerator implements MapGenerationPhase {
         } while (!done);
 
         contiguousAreaCount = limit;
-    }
-
-    private void setRainfall(int x, int y, double value) {
-        rainfall.setData(x, y, value);
-    }
-
-    private void setWindz(int x, int y, double value) {
-        windz.setData(x, y, value);
     }
 
     private void setTemperature(int x, int y, double v) {
