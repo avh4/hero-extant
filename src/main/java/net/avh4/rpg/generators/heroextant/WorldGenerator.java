@@ -24,17 +24,12 @@ public class WorldGenerator implements MapGenerationPhase {
     //
     // PRECOMPRESS_ABS_OFFSET = 1073741824 // (1 Shl 30)
     //
-    private static double SEA_LEVEL = 0.333;
-    private static int TEMPERATURE_BAND_RESOLUTION = 2; // 1 is perfect, higher
-    // = rougher
-    // WGEN_MAX_TEMPERATURE = 40
-    // WGEN_MIN_TEMPERATURE = -60
+    public static double SEA_LEVEL = 0.333;
 
     private int[][] contiguousMap;
 
     private int worldW;
     private int worldH;
-    private final Hemisphere hemisphere;
     private final Random r;
     private final MapData<Double> elevation;
     private final MapData<Double> temperature;
@@ -43,6 +38,7 @@ public class WorldGenerator implements MapGenerationPhase {
     private final MapData<Integer> waterSaturation;
 
     private final WindRainfallGenerationPhase windRainfallGeneration;
+    private final TemperatureGenerationPhase temperatureGeneration;
 
     public static void main(final String[] args) throws IOException {
         final int w = 800;
@@ -194,13 +190,13 @@ public class WorldGenerator implements MapGenerationPhase {
                           MapData<TileType> tiles, MapData<Integer> waterSaturation) {
         this.worldW = width;
         this.worldH = height;
-        this.hemisphere = hemisphere;
         this.r = r;
         this.elevation = elevation;
         this.temperature = temperature;
         this.rainfall = rainfall;
         this.tiles = tiles;
         this.waterSaturation = waterSaturation;
+        temperatureGeneration = new TemperatureGenerationPhase(r, hemisphere, elevation, temperature);
         windRainfallGeneration = new WindRainfallGenerationPhase(r, elevation, temperature, rainfall, windz);
     }
 
@@ -209,7 +205,7 @@ public class WorldGenerator implements MapGenerationPhase {
         do {
             createWorld(worldW, worldH);
         } while (getLandMassPercent() < 0.15 || getAverageElevation() < 0.1);
-        calculateTemperatures(hemisphere);
+        temperatureGeneration.execute();
         windRainfallGeneration.execute();
         calculateWaterFlow();
         determineWorldTerrainTypes();
@@ -389,81 +385,6 @@ public class WorldGenerator implements MapGenerationPhase {
 
         // Done!
         // resultString = "Moves: "+ToString(countMoves)
-    }
-
-    private void calculateTemperatures(final Hemisphere hemisphere) {
-        for (int i = 0; i < worldH; i += TEMPERATURE_BAND_RESOLUTION) {
-
-            // Generate band
-            final int bandy = i;
-            final int bandrange = 7;
-
-            double bandtemp;
-            switch (hemisphere) {
-                case North:
-                    // 0, 0.5, 1
-                    bandtemp = (double) i / worldH;
-                    break;
-                case Equator:
-                    // 0, 1, 0
-                    if (i < worldH / 2) {
-                        bandtemp = (double) i / worldH;
-                        bandtemp = bandtemp * 2.0;
-                    } else {
-                        bandtemp = 1.0 - (double) i / worldH;
-                        bandtemp = bandtemp * 2.0;
-                    }
-                    break;
-                case South:
-                    // 1, 0.5, 0
-                    bandtemp = 1.0 - (double) i / worldH;
-                    break;
-                default:
-                    bandtemp = 0;
-                    break;
-            }
-            bandtemp = Math.max(bandtemp, 0.075);
-
-            final int[] band = new int[worldW];
-            for (int x = 0; x < worldW; x++) {
-                band[x] = bandy;
-            }
-
-            // Randomize
-            double dir = 1.0;
-            double diradj = 1;
-            double dirsin = r.nextDouble() * 7 + 1;
-            for (int x = 0; x < worldW; x++) {
-                band[x] = (int) (band[x] + dir);
-                dir = dir + r.nextDouble() * (Math.sin(dirsin * x) * diradj);
-                if (dir > bandrange) {
-                    diradj = -1;
-                    dirsin = r.nextDouble() * 7 + 1;
-                }
-                if (dir < -bandrange) {
-                    diradj = 1;
-                    dirsin = r.nextDouble() * 7 + 1;
-                }
-            }
-
-            for (int x = 0; x < worldW; x++) {
-                for (int y = 0; y < worldH; y++) {
-
-                    if (getElevation(x, y) < SEA_LEVEL) {
-                        // Water tiles
-                        if (y > band[x]) {
-                            setTemperature(x, y, bandtemp * 0.7);
-                        }
-                    } else {
-                        // Land tiles
-                        if (y > band[x]) {
-                            setTemperature(x, y, bandtemp
-                                    * (1.0 - (getElevation(x, y) - SEA_LEVEL)));
-                        }
-                    }
-                }
-            }
-        }
     }
 
     private float getAverageElevation() {
@@ -662,10 +583,6 @@ public class WorldGenerator implements MapGenerationPhase {
         } while (!done);
 
         contiguousAreaCount = limit;
-    }
-
-    private void setTemperature(int x, int y, double v) {
-        temperature.setData(x, y, v);
     }
 
     private double getTemperature(int x, int y) {
