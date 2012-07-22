@@ -1,95 +1,97 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <parent>
-    <groupId>org.sonatype.oss</groupId>
-    <artifactId>oss-parent</artifactId>
-    <version>7</version>
-  </parent>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.sonatype.oss</groupId>
+        <artifactId>oss-parent</artifactId>
+        <version>7</version>
+    </parent>
 
-  <groupId>net.avh4.rpg.generators</groupId>
-  <artifactId>hero-extant</artifactId>
-  <version>0.0.4-SNAPSHOT</version>
-  <packaging>jar</packaging>
+    <groupId>net.avh4.rpg.generators</groupId>
+    <artifactId>hero-extant</artifactId>
+    <version>0.0.4-SNAPSHOT</version>
+    <packaging>jar</packaging>
 
-  <name>hero-extant</name>
-  <description />
-  <url>https://github.com/avh4/hero-extant</url>
-  <licenses>
-    <license>
-      <name>The GNU General Public License v3.0</name>
-      <url>http://www.gnu.org/copyleft/gpl.html</url>
-      <distribution>repo</distribution>
-    </license>
-  </licenses>
-
-  <scm>
-    <connection>scm:git:https://github.com/avh4/hero-extant.git</connection>
-    <developerConnection>scm:git:git@github.com:avh4/hero-extant.git</developerConnection>
+    <name>hero-extant</name>
+    <description/>
     <url>https://github.com/avh4/hero-extant</url>
-  </scm>
+    <licenses>
+        <license>
+            <name>The GNU General Public License v3.0</name>
+            <url>http://www.gnu.org/copyleft/gpl.html</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
 
-  <developers>
-    <developer>
-      <id>avh4</id>
-      <name>Aaron VonderHaar</name>
-      <email>gruen0aermel@gmail.com</email>
-    </developer>
-  </developers>
+    <scm>
+        <connection>scm:git:https://github.com/avh4/hero-extant.git</connection>
+        <developerConnection>scm:git:git@github.com:avh4/hero-extant.git</developerConnection>
+        <url>https://github.com/avh4/hero-extant</url>
+    </scm>
 
-  <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-  </properties>
+    <developers>
+        <developer>
+            <id>avh4</id>
+            <name>Aaron VonderHaar</name>
+            <email>gruen0aermel@gmail.com</email>
+        </developer>
+    </developers>
 
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <version>2.3.2</version>
-        <configuration>
-          <source>1.6</source>
-          <target>1.6</target>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-jar-plugin</artifactId>
-        <version>2.3</version>
-        <configuration>
-          <archive>
-            <manifest>
-              <mainClass>net.avh4.rpg.generators.heroextant.WorldGenerator</mainClass>
-              <packageName>net.avh4.rpg.generators.heroextant</packageName>
-            </manifest>
-          </archive>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
-  <dependencies>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>4.8.1</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.mockito</groupId>
-      <artifactId>mockito-all</artifactId>
-      <version>1.8.5</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.hamcrest</groupId>
-      <artifactId>hamcrest-integration</artifactId>
-      <version>1.2.1</version>
-    </dependency>
-    <dependency>
-      <groupId>net.avh4.util</groupId>
-      <artifactId>imagecomparison</artifactId>
-      <version>0.0.2</version>
-      <scope>test</scope>
-    </dependency>
-  </dependencies>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>2.3.2</version>
+                <configuration>
+                    <source>1.6</source>
+                    <target>1.6</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>2.3</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <mainClass>net.avh4.rpg.generators.heroextant.WorldGenerator</mainClass>
+                            <packageName>net.avh4.rpg.generators.heroextant</packageName>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+    <dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit-dep</artifactId>
+            <version>4.8.2</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>1.8.5</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.hamcrest</groupId>
+            <artifactId>hamcrest-integration</artifactId>
+            <version>1.2.1</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>net.avh4.util</groupId>
+            <artifactId>imagecomparison</artifactId>
+            <version>0.1.2</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
 </project>
