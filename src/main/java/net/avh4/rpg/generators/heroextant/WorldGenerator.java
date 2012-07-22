@@ -14,8 +14,9 @@ import java.util.Random;
 
 public class WorldGenerator implements MapGenerationPhase {
 
-    private static final int MAX_WORLD_X = 2048 * 2;
-    private static final int MAX_WORLD_Y = MAX_WORLD_X;
+    private static final int MAX_WORLD_SIZE = 2048 * 2;
+    private static final int MAX_WORLD_X = MAX_WORLD_SIZE;
+    private static final int MAX_WORLD_Y = MAX_WORLD_SIZE;
 
     // MAX_WORLD_SUMSQR = 0 + ((MAX_WORLD_X * MAX_WORLD_X) + (MAX_WORLD_Y *
     // MAX_WORLD_Y))
@@ -23,8 +24,6 @@ public class WorldGenerator implements MapGenerationPhase {
     // PRECOMPRESS_ABS_OFFSET = 1073741824 // (1 Shl 30)
     //
     public static double SEA_LEVEL = 0.333;
-
-    private int[][] contiguousMap;
 
     private int worldW;
     private int worldH;
@@ -37,6 +36,7 @@ public class WorldGenerator implements MapGenerationPhase {
     private final WindRainfallGenerationPhase windRainfallGeneration;
     private final RiverGenerationPhase riverGeneration;
     private final TerrainGenerationPhase terrainGeneration;
+    private final ContiguousAreasAnnotationPhase contiguousAreasAnnotation;
 
     public static void main(final String[] args) throws IOException {
         final int w = 800;
@@ -75,7 +75,7 @@ public class WorldGenerator implements MapGenerationPhase {
 
         for (int y = 0; y < worldH; y++) {
             for (int x = 0; x < worldW; x++) {
-                int gid = 0;
+                int gid;
                 switch (getTileType(x, y)) {
                     case Sea:
                         gid = 21 - (int) (getElevation(x, y) / SEA_LEVEL * 3);
@@ -177,11 +177,11 @@ public class WorldGenerator implements MapGenerationPhase {
         return c;
     }
 
-    @SuppressWarnings("unused")
-    private Color colorFromRegion(final int y, final int x) {
-        return new Color(contiguousMap[x][y] * 40 % 256,
-                contiguousMap[x][y] * 40 % 256, contiguousMap[x][y] * 40 % 256);
-    }
+//    @SuppressWarnings("unused")
+//    private Color colorFromRegion(final int y, final int x) {
+//        return new Color(contiguousMap[x][y] * 40 % 256,
+//                contiguousMap[x][y] * 40 % 256, contiguousMap[x][y] * 40 % 256);
+//    }
 
     public WorldGenerator(int width, int height, Hemisphere hemisphere, Random r, MapData<Double> elevation,
                           MapData<Double> temperature, MapData<Double> windz, MapData<Double> rainfall,
@@ -197,6 +197,7 @@ public class WorldGenerator implements MapGenerationPhase {
         windRainfallGeneration = new WindRainfallGenerationPhase(r, elevation, temperature, rainfall, windz);
         riverGeneration = new RiverGenerationPhase(r, elevation, rainfall, waterSaturation);
         terrainGeneration = new TerrainGenerationPhase(elevation, temperature, rainfall, waterSaturation, tiles);
+        contiguousAreasAnnotation = new ContiguousAreasAnnotationPhase(tiles);
     }
 
     @Override
@@ -208,7 +209,7 @@ public class WorldGenerator implements MapGenerationPhase {
         windRainfallGeneration.execute();
         riverGeneration.execute();
         terrainGeneration.execute();
-        determineContiguousAreas();
+        contiguousAreasAnnotation.execute();
     }
 
     private float getAverageElevation() {
@@ -230,114 +231,6 @@ public class WorldGenerator implements MapGenerationPhase {
             throw new RuntimeException(String.format("%d x %d is too small. Minimum map size is 32 x 32",
                     w, h));
         }
-    }
-
-    private void determineContiguousAreas() {
-        contiguousMap = new int[worldW][worldH];
-        for (int y = 0; y < worldH; y++) {
-            for (int x = 0; x < worldW; x++) {
-                contiguousMap[x][y] = 1;
-            }
-        }
-
-        // Step 1 - identify groups
-        int i = 2;
-        for (int y = 1; y < worldH; y++) {
-            for (int x = 1; x < worldW; x++) {
-                if (!(getTileType(x, y) == getTileType(x - 1, y))
-                        && !(getTileType(x, y) == getTileType(x, y - 1))) {
-                    contiguousMap[x][y] = i;
-                    i++;
-                } else {
-                    int mincg1 = 0;
-                    int mincg2 = 0;
-
-                    if (getTileType(x, y) == getTileType(x, y - 1)) {
-                        contiguousMap[x][y] = contiguousMap[x][y - 1];
-                        mincg1 = contiguousMap[x][y - 1];
-                    }
-                    if (getTileType(x, y) == getTileType(x - 1, y)) {
-                        contiguousMap[x][y] = contiguousMap[x - 1][y];
-                        mincg2 = contiguousMap[x - 1][y];
-                    }
-
-                    if ((mincg1 != 0) && (mincg2 != 0)) {
-                        contiguousMap[x][y] = Math.min(mincg1, mincg2);
-                    }
-                }
-            }
-        }
-
-        int contiguousAreaCount = i;
-
-        // Step 2a - merge rivers
-        for (int x = 1; x < worldW - 1; x++) {
-            for (int y = 1; y < worldH - 1; y++) {
-                if (getTileType(x, y) == TileType.River) {
-                    contiguousMap[x][y] = 1;
-                }
-            }
-        }
-
-        // Step 2b - merge groups
-        for (int x = 1; x < worldW - 1; x++) {
-            for (int y = 1; y < worldH - 1; y++) {
-
-                for (int x2 = -1; x2 <= 1; x2++) {
-                    for (int y2 = -1; y2 <= 1; y2++) {
-                        if (x2 != 0 || y2 != 0) {
-                            if (contiguousMap[x][y] != contiguousMap[x + x2][y
-                                    + y2]) {
-                                if (getTileType(x, y) == getTileType(x
-                                        + x2, y + y2)) {
-                                    final int adjust = contiguousMap[x + x2][y
-                                            + y2];
-                                    for (int x3 = 0; x3 < worldW; x3++) {
-                                        for (int y3 = 0; y3 < worldH; y3++) {
-                                            if (contiguousMap[x3][y3] == adjust) {
-                                                contiguousMap[x3][y3] = contiguousMap[x][y];
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        // Stage 3 - reduce groups (This bit is very unoptimised and I don't
-        // think does the job completely)
-        int limit = 0;
-        int lowest = worldW * worldH + 1;
-        boolean done = false;
-        do {
-            done = true;
-
-            for (int x = 0; x < worldW; x++) {
-                for (int y = 0; y < worldH; y++) {
-                    if (contiguousMap[x][y] < lowest
-                            && contiguousMap[x][y] > limit) {
-                        lowest = contiguousMap[x][y];
-                    }
-                }
-            }
-
-            for (int x = 0; x < worldW; x++) {
-                for (int y = 0; y < worldH; y++) {
-                    if (lowest == contiguousMap[x][y]) {
-                        contiguousMap[x][y] = limit + 1;
-                        done = false;
-                    }
-                }
-            }
-            if (lowest == limit + 1) {
-                limit++;
-            }
-        } while (!done);
-
-        contiguousAreaCount = limit;
     }
 
     private double getElevation(int x, int y) {
