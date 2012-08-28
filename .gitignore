@@ -3,3 +3,5 @@
 .idea/workspace.xml
 rendered.png
 rendered.tmx
+outs
+*.tmx
