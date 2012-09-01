@@ -41,12 +41,12 @@ public class WorldGenerator implements MapGenerationPhase {
     public static void main(final String[] args) throws IOException {
         final int w = 800;
         final int h = 600;
-        final MapData<Double> elevation = new DenseMapData<Double>(w, h);
-        final MapData<Double> temperature = new DenseMapData<Double>(w, h);
-        final MapData<Double> windz = new DenseMapData<Double>(w, h);
-        final MapData<Double> rainfall = new DenseMapData<Double>(w, h);
-        final MapData<TileType> tiles = new DenseMapData<TileType>(w, h);
-        final MapData<Integer> waterSaturation = new DenseMapData<Integer>(w, h);
+        final MapData<Double> elevation = new DenseMapData<Double>("Elevation", w, h);
+        final MapData<Double> temperature = new DenseMapData<Double>("Temperature", w, h);
+        final MapData<Double> windz = new DenseMapData<Double>("Wind", w, h);
+        final MapData<Double> rainfall = new DenseMapData<Double>("Rainfall", w, h);
+        final MapData<TileType> tiles = new DenseMapData<TileType>("TileType", w, h);
+        final MapData<Integer> waterSaturation = new DenseMapData<Integer>("Water Saturation", w, h);
 
         final WorldGenerator world = new WorldGenerator(w, h, Hemisphere.North, new Random(),
                 elevation, temperature, windz, rainfall, tiles, waterSaturation);
