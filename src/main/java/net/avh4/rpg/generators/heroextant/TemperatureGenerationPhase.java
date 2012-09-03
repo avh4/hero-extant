@@ -3,8 +3,7 @@ package net.avh4.rpg.generators.heroextant;
 import net.avh4.rpg.maptoolkit.MapGenerationPhase;
 import net.avh4.rpg.maptoolkit.data.ConstMapData;
 import net.avh4.rpg.maptoolkit.data.MapData;
-
-import java.util.Random;
+import net.avh4.util.Random;
 
 public class TemperatureGenerationPhase implements MapGenerationPhase {
     private static final int TEMPERATURE_BAND_RESOLUTION = 2; // 1 is perfect, higher = rougher

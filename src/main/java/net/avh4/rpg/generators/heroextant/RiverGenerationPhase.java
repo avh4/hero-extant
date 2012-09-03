@@ -3,10 +3,10 @@ package net.avh4.rpg.generators.heroextant;
 import net.avh4.rpg.maptoolkit.MapGenerationPhase;
 import net.avh4.rpg.maptoolkit.data.ConstMapData;
 import net.avh4.rpg.maptoolkit.data.MapData;
+import net.avh4.util.Random;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 public class RiverGenerationPhase implements MapGenerationPhase {
     private final Random r;

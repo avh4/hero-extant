@@ -2,8 +2,7 @@ package net.avh4.rpg.generators.heroextant;
 
 import net.avh4.rpg.maptoolkit.MapGenerationPhase;
 import net.avh4.rpg.maptoolkit.data.MapData;
-
-import java.util.Random;
+import net.avh4.util.Random;
 
 public class ElevationGenerationPhase implements MapGenerationPhase {
     private final Random r;

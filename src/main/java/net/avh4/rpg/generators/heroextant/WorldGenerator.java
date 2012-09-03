@@ -3,6 +3,7 @@ package net.avh4.rpg.generators.heroextant;
 import net.avh4.rpg.maptoolkit.MapGenerationPhase;
 import net.avh4.rpg.maptoolkit.data.DenseMapData;
 import net.avh4.rpg.maptoolkit.data.MapData;
+import net.avh4.util.Random;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -10,7 +11,6 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.Random;
 
 public class WorldGenerator implements MapGenerationPhase {
 
