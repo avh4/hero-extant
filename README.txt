@@ -1,3 +1,7 @@
+Java version:
+To build the Java version with maven, run "mvn package", and then "java -jar target/hero-extant-0.0.1-SNAPSHOT.jar"
+
+
 Hero Extant
 Copyright (C) Ben Golightly & contributors
 See License.txt
