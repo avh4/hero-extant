@@ -1,5 +1,20 @@
 Java version:
-To build the Java version with maven, run "mvn package", and then "java -jar target/hero-extant-0.0.1-SNAPSHOT.jar"
+
+To build the Java version with maven,
+
+First you will need to build the map-toolkit SNAPSHOT jar:
+
+    git clone https://github.com/avh4/map-toolkit.git
+    cd map-toolkit
+    mvn clean install
+    cd ..
+
+Then build and run hero-extant:
+
+    git clone https://github.com/avh4/hero-extant
+    cd hero-extant
+    mvn package
+    java -jar target/hero-extant-0.0.1-SNAPSHOT.jar
 
 
 Hero Extant
