@@ -14,7 +14,7 @@ Then build and run hero-extant:
     git clone https://github.com/avh4/hero-extant
     cd hero-extant
     mvn package
-    java -jar target/hero-extant-0.0.1-SNAPSHOT.jar
+    mvn exec:java -Dexec.mainClass=net.avh4.rpg.generators.heroextant.WorldGenerator
 
 
 Hero Extant
