@@ -14,7 +14,9 @@ Then build and run hero-extant:
     git clone https://github.com/avh4/hero-extant
     cd hero-extant
     mvn package
-    mvn exec:java -Dexec.mainClass=net.avh4.rpg.generators.heroextant.WorldGenerator
+    mvn exec:java
+
+The output files are rendered.png and rendered.tmx
 
 
 Hero Extant
