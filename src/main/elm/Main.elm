@@ -1,21 +1,55 @@
-import Graphics.Collage exposing (..)
-import Graphics.Element exposing (..)
-import Matrix exposing (Matrix)
+import Graphics.Collage as C exposing (..)
+import Graphics.Element as E exposing (..)
+import Color exposing (..)
+import Matrix exposing (Matrix, get, set, loc, row, col, Location)
 import Random exposing (Seed)
 import Text
-import Array
 import Debug
+import Maybe exposing (map, withDefault, andThen, Maybe (..) )
+import List exposing (sum, foldr)
+import Array
 
-set (x,y) a m =
-  case Array.get (x-1) m of
-    Nothing -> m
-    Just inner ->
-      Array.set (x-1) (Array.set (y-1) a inner) m
+all : List (Maybe a) -> Maybe (List a)
+all =
+    foldr (
+        \maybeItem total ->
+            case total of
+                Nothing -> Nothing
+                Just list ->
+                    case maybeItem of
+                        Nothing -> Nothing
+                        Just item -> Just (item :: list)
+    ) (Just [])
 
-initialMap = Matrix.square 20 (always {})
+update location f m =
+  Maybe.withDefault m <| (
+    get location m
+    |> Maybe.map f
+    |> Maybe.map (
+      \value ->
+        let
+          maybeOldRow = Array.get (row location) m
 
-elevation : (Matrix a,Seed) -> (Matrix { a | elevation : Float },Seed)
-elevation (input,seed) =
+        in
+          case maybeOldRow of
+            Just oldRow ->
+              Array.set (col location) (value) oldRow
+              |> (\newRow -> Array.set (row location) newRow m)
+
+            Nothing -> m
+    )
+  )
+
+mapWidth = 512
+mapHeight = 512
+
+matrixWidth = 100
+matrixHeight = 100
+
+initialMap = Matrix.matrix matrixWidth matrixHeight (always {})
+
+elevation : (Matrix a, Seed) -> (Matrix { a | elevation : Float }, Seed)
+elevation (input, seed) =
     let
         roughness = 100.0 / 20
         elevation = 100.0 / 200
@@ -34,53 +68,100 @@ elevation (input,seed) =
                 random1 = 0.7 -- TODO r.nextDouble()
                 d' = d * (random1 * 2 - 1) * roughness
 
-                getElevation x y matrix =
-                    case Matrix.elementAt (x,y) matrix of
-                        Just v -> v.elevation
-                setElevation x y v matrix =
-                    case Matrix.elementAt (x,y) matrix of
-                        Just r -> set (x,y) { r | elevation <- v } matrix
-                        Nothing -> matrix
+                getElevation loc matrix =
+                    Maybe.map (.elevation) (Matrix.get loc matrix)
 
+                setElevation loc v matrix =
+                    update loc (\r -> { r | elevation <- v }) matrix
+
+                updater inputLocs destination valueComputer map' =
+                    let
+                        allElevations =
+                            List.map ((flip getElevation) map') inputLocs
+                            |> all
+                    in
+                        allElevations
+                        |> Maybe.map (\inputs ->
+                            setElevation destination (valueComputer inputs) map'
+                        )
+                        |> Maybe.withDefault map'
+
+                computer inputs = sum inputs / 2
             in
                 if w' > 1 || h' > 1
                 then
                     map
-                    |> (\map' -> setElevation midx y1 (((getElevation x1 y1 map') + (getElevation x2 y1 map')) / 2) map')
-                    --|> (\map' -> setElevation midx y2 )
-            --setElevation(midx, y2, (getElevation(x1, y2) + getElevation(x2, y2)) / 2);
-            --setElevation(x1, midy, (getElevation(x1, y1) + getElevation(x1, y2)) / 2);
-            --setElevation(x2, midy, (getElevation(x2, y1) + getElevation(x2, y2)) / 2);
-                    |> (\map' -> setElevation midx midy 
-                        ([(x1,y1), (x1,y2), (x2,y1), (x2,y2)]
-                            |> List.map (\(x,y) -> getElevation x y map')
-                            |> List.sum
-                            |> (flip (/)) 4
-                            |> (+) d)
-                        map')
+                    |> updater
+                        [ loc x1 y1
+                        , loc x2 y1
+                        ]
+                        (loc midx y1)
+                        computer
+                    |> updater
+                        [ loc x1 y2
+                        , loc x2 y2
+                        ]
+                        (loc midx y2)
+                        computer
+                    |> updater
+                        [ loc x1 y1
+                        , loc x1 y2
+                        ]
+                        (loc x1 midy)
+                        computer
+                    |> updater
+                        [ loc x2 y1
+                        , loc x2 y2
+                        ]
+                        (loc x2 midy)
+                        computer
+                    |> updater
+                        [ loc x1 y1
+                        , loc x1 y2
+                        , loc x2 y1
+                        , loc x2 y2
+                        ]
+                        (loc midx midy)
+                        (\inputs -> sum inputs / 4 + d)
+                    |> (\map' -> if midinit > -1 then setElevation (loc midx midy) midinit map' else map')
                     |> divideWorld x1 y1 midx midy roughness -1
+                    |> divideWorld midx y1 x2 midy roughness -1
+                    |> divideWorld x1 midy midx y2 roughness -1
+                    |> divideWorld midx midy x2 y2 roughness -1
 
                 else map
         result =
             Matrix.map (\r -> { r | elevation = 0}) input
-            |> divideWorld 0 0 (w-1) (h-1) roughness elevation
+            |> divideWorld 0 0 w h roughness elevation
     in
     (result, seed)
 
 render : Matrix { a | elevation : Float } -> Element
 render map =
     map
-    |> Matrix.map (.elevation >> toString >> txt)
+    |> Matrix.map (.elevation)
+    |> Matrix.map renderElevation
     |> Matrix.toList
     |> List.map (flow right)
     |> flow down
 
-txt str =
-    Text.fromString str
-    |> Text.monospace
-    |> centered
 
-main = 
+boxWidth = (toFloat mapWidth) / (toFloat matrixWidth)
+boxHeight = (toFloat mapHeight) / (toFloat matrixHeight)
+
+box = C.rect boxWidth boxHeight
+
+renderElevation : Float -> Element
+renderElevation elevation =
+    let
+        colorFor : Float -> Color
+        colorFor e =
+            rgb (floor <| 255 * 0.75 * e) (floor <| 255 * 0.75 * e) 0
+    in
+        [C.filled (colorFor elevation) box]
+        |> C.collage (floor boxWidth) (floor boxHeight)
+
+main =
     (initialMap, Random.initialSeed 42)
     |> elevation
     |> fst
@@ -100,7 +181,7 @@ main =
 --        [ rainfall rainfallData
 --        , elevation elevationData
 --        ]
---    foldr (\currentMap transformationFunction -> transformationFunction currentMap) initialMap ts 
+--    foldr (\currentMap transformationFunction -> transformationFunction currentMap) initialMap ts
 
 
 
