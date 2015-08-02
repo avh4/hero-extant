@@ -1,7 +1,7 @@
 import Graphics.Collage as C exposing (..)
 import Graphics.Element as E exposing (..)
 import Color exposing (..)
-import Matrix exposing (Matrix, get, set, loc, row, col, Location)
+import Matrix exposing (Matrix, get, set, loc, row, col, Location, update)
 import Random exposing (Seed)
 import Text
 import Debug
@@ -20,25 +20,6 @@ all =
                         Nothing -> Nothing
                         Just item -> Just (item :: list)
     ) (Just [])
-
-update location f m =
-  Maybe.withDefault m <| (
-    get location m
-    |> Maybe.map f
-    |> Maybe.map (
-      \value ->
-        let
-          maybeOldRow = Array.get (row location) m
-
-        in
-          case maybeOldRow of
-            Just oldRow ->
-              Array.set (col location) (value) oldRow
-              |> (\newRow -> Array.set (row location) newRow m)
-
-            Nothing -> m
-    )
-  )
 
 mapWidth = 512
 mapHeight = 512
