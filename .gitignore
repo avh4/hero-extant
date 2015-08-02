@@ -5,3 +5,5 @@ rendered.png
 rendered.tmx
 outs
 *.tmx
+/elm.js
+/elm-stuff/
