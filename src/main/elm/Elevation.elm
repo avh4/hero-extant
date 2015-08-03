@@ -37,13 +37,13 @@ generate (input, seed) =
                 random1 = 0.7 -- TODO r.nextDouble()
                 d' = d * (random1 * 2 - 1) * roughness
 
-                getElevation loc matrix =
-                    Maybe.map (.elevation) (Matrix.get loc matrix)
+                getElevation (x,y) matrix =
+                    Maybe.map (.elevation) (Matrix.get (Matrix.loc x y) matrix)
 
-                setElevation loc v matrix =
-                    Matrix.update loc (\r -> { r | elevation <- v }) matrix
+                setElevation (x,y) v matrix =
+                    Matrix.update (Matrix.loc x y) (\r -> { r | elevation <- v }) matrix
 
-                updater inputLocs destination valueComputer map' =
+                updater destination inputLocs valueComputer map' =
                     let
                         allElevations =
                             List.map ((flip getElevation) map') inputLocs
@@ -60,39 +60,22 @@ generate (input, seed) =
                 if w' > 1 || h' > 1
                 then
                     map
-                    |> updater
-                        [ Matrix.loc x1 y1
-                        , Matrix.loc x2 y1
-                        ]
-                        (Matrix.loc midx y1)
+                    |> updater (midx,y1)
+                        [ (x1,y1), (x2,y1) ]
                         computer
-                    |> updater
-                        [ Matrix.loc x1 y2
-                        , Matrix.loc x2 y2
-                        ]
-                        (Matrix.loc midx y2)
+                    |> updater (midx,y2)
+                        [ (x1,y2), (x2,y2) ]
                         computer
-                    |> updater
-                        [ Matrix.loc x1 y1
-                        , Matrix.loc x1 y2
-                        ]
-                        (Matrix.loc x1 midy)
+                    |> updater (x1,midy)
+                        [ (x1,y1), (x1,y2) ]
                         computer
-                    |> updater
-                        [ Matrix.loc x2 y1
-                        , Matrix.loc x2 y2
-                        ]
-                        (Matrix.loc x2 midy)
+                    |> updater (x2,midy)
+                        [ (x2,y1), (x2,y2) ]
                         computer
-                    |> updater
-                        [ Matrix.loc x1 y1
-                        , Matrix.loc x1 y2
-                        , Matrix.loc x2 y1
-                        , Matrix.loc x2 y2
-                        ]
-                        (Matrix.loc midx midy)
+                    |> updater (midx,midy)
+                        [ (x1,y1), (x1,y2), (x2,y1), (x2,y2) ]
                         (\inputs -> List.sum inputs / 4 + d)
-                    |> (\map' -> if midinit > -1 then setElevation (Matrix.loc midx midy) midinit map' else map')
+                    |> (\map' -> if midinit > -1 then setElevation (midx,midy) midinit map' else map')
                     |> divideWorld x1 y1 midx midy roughness -1
                     |> divideWorld midx y1 x2 midy roughness -1
                     |> divideWorld x1 midy midx y2 roughness -1
