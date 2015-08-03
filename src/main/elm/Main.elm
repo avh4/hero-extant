@@ -10,20 +10,15 @@ import Array
 
 import Elevation
 
-mapWidth = 512
-mapHeight = 512
 
-matrixWidth = 100
-matrixHeight = 100
-
-initialMap = Matrix.matrix matrixWidth matrixHeight (always {})
+initialMap = Matrix.matrix 100 100 (always {})
 
 
-render : (a -> Float) -> Matrix a -> Element
-render extract map =
+render : (Int,Int) -> (a -> Float) -> Matrix a -> Element
+render (mapWidth,mapHeight) extract map =
     let
-        boxWidth = (toFloat mapWidth) / (toFloat matrixWidth)
-        boxHeight = (toFloat mapHeight) / (toFloat matrixHeight)
+        boxWidth = (toFloat mapWidth) / (toFloat <| Matrix.colCount map)
+        boxHeight = (toFloat mapHeight) / (toFloat <| Matrix.rowCount map)
         box = C.rect boxWidth boxHeight
 
         colorFor value =
@@ -41,10 +36,11 @@ render extract map =
 
 
 main =
-    (initialMap, Random.initialSeed 42)
+    initialMap
+    |> (flip (,)) (Random.initialSeed 42)
     |> Elevation.generate
     |> fst
-    |> render .elevation
+    |> render (512,512) .elevation
 
 
 --type alias Map = Matrix Value
