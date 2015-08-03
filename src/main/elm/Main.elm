@@ -19,36 +19,32 @@ matrixHeight = 100
 initialMap = Matrix.matrix matrixWidth matrixHeight (always {})
 
 
-render : Matrix { a | elevation : Float } -> Element
-render map =
-    map
-    |> Matrix.map (.elevation)
-    |> Matrix.map renderElevation
-    |> Matrix.toList
-    |> List.map (flow right)
-    |> flow down
-
-
-boxWidth = (toFloat mapWidth) / (toFloat matrixWidth)
-boxHeight = (toFloat mapHeight) / (toFloat matrixHeight)
-
-box = C.rect boxWidth boxHeight
-
-renderElevation : Float -> Element
-renderElevation elevation =
+render : (a -> Float) -> Matrix a -> Element
+render extract map =
     let
-        colorFor : Float -> Color
-        colorFor e =
-            rgb (floor <| 255 * 0.75 * e) (floor <| 255 * 0.75 * e) 0
+        boxWidth = (toFloat mapWidth) / (toFloat matrixWidth)
+        boxHeight = (toFloat mapHeight) / (toFloat matrixHeight)
+        box = C.rect boxWidth boxHeight
+
+        colorFor value =
+            rgb (floor <| 255 * 0.75 * value) (floor <| 255 * 0.75 * value) 0
+
+        cell value =
+            [ C.filled (colorFor value) box ]
+            |> C.collage (floor boxWidth) (floor boxHeight)
     in
-        [C.filled (colorFor elevation) box]
-        |> C.collage (floor boxWidth) (floor boxHeight)
+        map
+        |> Matrix.map (extract >> cell)
+        |> Matrix.toList
+        |> List.map (flow right)
+        |> flow down
+
 
 main =
     (initialMap, Random.initialSeed 42)
     |> Elevation.generate
     |> fst
-    |> render
+    |> render .elevation
 
 
 --type alias Map = Matrix Value
