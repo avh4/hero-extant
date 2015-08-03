@@ -2,7 +2,7 @@ module Elevation (generate) where
 
 import Matrix exposing (Matrix)
 import Random exposing (Seed)
-
+import World exposing (Tile, World)
 
 all : List (Maybe a) -> Maybe (List a)
 all =
@@ -17,7 +17,7 @@ all =
     ) (Just [])
 
 
-generate : (Matrix a, Seed) -> (Matrix { a | elevation : Float }, Seed)
+generate : (Matrix Tile, Seed) -> (Matrix Tile, Seed)
 generate (input, seed) =
     let
         roughness = 100.0 / 20
@@ -73,6 +73,6 @@ generate (input, seed) =
 
                 else (map,seed')
     in
-        Matrix.map (\r -> { r | elevation = 0}) input
+        input
         |> (flip (,)) seed
         |> divideWorld 0 0 w h roughness elevation

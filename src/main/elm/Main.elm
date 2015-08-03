@@ -9,28 +9,58 @@ import Maybe exposing (map, withDefault, andThen, Maybe (..) )
 import Array
 import Time
 
+import World exposing (World, Tile, defaultSeaLevel, initialMap)
 import Elevation
+import Native.Now as Now
+
+import Html
+import StartApp
+
+main =
+    StartApp.start { model = model, view = view, update = update }
 
 
-initialMap = Matrix.matrix 100 100 (always {})
+model =
+    generateWorld <| Random.initialSeed Native.Now.loadTime
 
 
+generateWorld : Seed -> World
+generateWorld seed =
+    { seaLevel = defaultSeaLevel
+    , map = generateMap seed |> fst
+    }
+
+
+generateMap : Seed -> (Matrix Tile, Seed)
 generateMap seed =
     initialMap
     |> (flip (,)) seed
     |> Elevation.generate
-    |> \(map,seed) -> { map = map, seed = seed }
 
 
-render : (Int,Int) -> (a -> Float) -> Matrix a -> Element
-render (mapWidth,mapHeight) extract map =
+view address model =
+    (render (512,512) .elevation address model)
+    |> Html.fromElement
+
+
+render : (Int,Int) -> (Tile -> Float) -> Signal.Address Action -> World -> Element
+render (mapWidth,mapHeight) extract address world =
     let
+        map = world.map
         boxWidth = (toFloat mapWidth) / (toFloat <| Matrix.colCount map)
         boxHeight = (toFloat mapHeight) / (toFloat <| Matrix.rowCount map)
         box = C.rect boxWidth boxHeight
 
-        colorFor value =
-            rgb (floor <| 255 * 0.75 * value) (floor <| 255 * 0.75 * value) 0
+        colorFor elevation =
+            let
+                belowSeaLevel =
+                    elevation < world.seaLevel
+
+                elevationDiff =
+                    elevation - world.seaLevel |> abs
+            in
+                if | belowSeaLevel -> rgb 0 0 (floor <| 255 * (0.5 * (elevation) + 0.5))
+                   | otherwise -> rgb (floor <| 255 * 0.75 * elevation) (floor <| 255 * 0.75 * elevation) 0
 
         cell value =
             [ C.filled (colorFor value) box ]
@@ -43,48 +73,16 @@ render (mapWidth,mapHeight) extract map =
         |> flow down
 
 
-type Action =
-    NewSeed
+type Action
+    = NewSeed Seed
+    | SeaLevel Float
 
+
+update : Action -> World -> World
 update msg model =
     case msg of
-        NewSeed ->
-            generateMap model.seed
+        NewSeed seed ->
+            { model | map <- generateMap seed |> fst }
 
-
-messages = Time.every (5 * Time.second) |> Signal.map (always NewSeed)
-
-main =
-    Signal.foldp update (generateMap <| Random.initialSeed 42) messages
-    |> Signal.map (.map >> render (512,512) .elevation)
-
-
---type alias Map = Matrix Value
-
---rainfall : Stuff -> Map -> Map
-
-
---elevation : OtherStuff -> Map -> Map
-
---transformations =
---    let
---        ts =
---        [ rainfall rainfallData
---        , elevation elevationData
---        ]
---    foldr (\currentMap transformationFunction -> transformationFunction currentMap) initialMap ts
-
-
-
---elevation : Matrix a -> Matrix { a | elevation : Double }
-
---rainfall : Int -> Matrix { a | elevation : Double } -> Matrix { a | rainfall : Double }
-
---main =
---    Matrix.square 100 100 {}
---    |> elevation
---    |> rainfall 42
---    |> view
---    --|> Matrix.map .rainfall
---    --|> render
-
+        SeaLevel newSeaLevel ->
+            { model | seaLevel <- newSeaLevel }
