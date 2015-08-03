@@ -9,31 +9,42 @@ import Maybe exposing (map, withDefault, andThen, Maybe (..) )
 import Array
 import Time
 
+import World exposing (World, Tile, defaultSeaLevel, initialMap)
 import Elevation
+import Native.Now as Now
+
+import Html
+import StartApp
+
+main =
+    StartApp.start { model = model, view = view, update = update }
 
 
-initialMap = Matrix.matrix 100 100 (always {})
+model =
+    generateWorld <| Random.initialSeed Native.Now.loadTime
 
-type alias World a =
-    { seaLevel : Float
-    , map : Matrix a
-    }
 
-defaultSeaLevel = 0.2
-
+generateWorld : Seed -> World
 generateWorld seed =
     { seaLevel = defaultSeaLevel
     , map = generateMap seed |> fst
     }
 
+
+generateMap : Seed -> (Matrix Tile, Seed)
 generateMap seed =
     initialMap
     |> (flip (,)) seed
     |> Elevation.generate
 
 
-render : (Int,Int) -> (a -> Float) -> World a -> Element
-render (mapWidth,mapHeight) extract world =
+view address model =
+    (render (512,512) .elevation address model)
+    |> Html.fromElement
+
+
+render : (Int,Int) -> (Tile -> Float) -> Signal.Address Action -> World -> Element
+render (mapWidth,mapHeight) extract address world =
     let
         map = world.map
         boxWidth = (toFloat mapWidth) / (toFloat <| Matrix.colCount map)
@@ -64,48 +75,14 @@ render (mapWidth,mapHeight) extract world =
 
 type Action
     = NewSeed Seed
+    | SeaLevel Float
 
+
+update : Action -> World -> World
 update msg model =
     case msg of
         NewSeed seed ->
-            generateWorld seed
+            { model | map <- generateMap seed |> fst }
 
-
-messages
-    = Time.every (5 * Time.second)
-    |> Signal.map (floor >> Random.initialSeed >> NewSeed)
-
-main =
-    Signal.foldp update (generateWorld <| Random.initialSeed 42) messages
-    |> Signal.map (render (512,512) .elevation)
-
-
---type alias Map = Matrix Value
-
---rainfall : Stuff -> Map -> Map
-
-
---elevation : OtherStuff -> Map -> Map
-
---transformations =
---    let
---        ts =
---        [ rainfall rainfallData
---        , elevation elevationData
---        ]
---    foldr (\currentMap transformationFunction -> transformationFunction currentMap) initialMap ts
-
-
-
---elevation : Matrix a -> Matrix { a | elevation : Double }
-
---rainfall : Int -> Matrix { a | elevation : Double } -> Matrix { a | rainfall : Double }
-
---main =
---    Matrix.square 100 100 {}
---    |> elevation
---    |> rainfall 42
---    |> view
---    --|> Matrix.map .rainfall
---    --|> render
-
+        SeaLevel newSeaLevel ->
+            { model | seaLevel <- newSeaLevel }
