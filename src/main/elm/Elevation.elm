@@ -25,8 +25,8 @@ generate (input, seed) =
         w = Matrix.colCount input
         h = Matrix.rowCount input
 
-        divideWorld : Int -> Int -> Int -> Int -> Float -> Float -> Matrix { a | elevation : Float } -> Matrix { a | elevation : Float }
-        divideWorld x1 y1 x2 y2 roughness midinit map =
+        divideWorld : Int -> Int -> Int -> Int -> Float -> Float -> (Matrix { a | elevation : Float },Seed) -> (Matrix { a | elevation : Float },Seed)
+        divideWorld x1 y1 x2 y2 roughness midinit (map,seed) =
             let
                 w' = x2 - x1
                 h' = y2 - y1
@@ -34,7 +34,7 @@ generate (input, seed) =
                 midy = (y1 + y2) // 2
 
                 d = (((w' + h' |> toFloat) / 2) / (w + h |> toFloat))
-                random1 = 0.7 -- TODO r.nextDouble()
+                (random1,seed') = Random.generate (Random.float 0 1) seed
                 d' = d * (random1 * 2 - 1) * roughness
 
                 getElevation (x,y) matrix =
@@ -63,16 +63,16 @@ generate (input, seed) =
                     |> calculateMidpoint 0 (midx,y2) [ (x1,y2), (x2,y2) ]
                     |> calculateMidpoint 0 (x1,midy) [ (x1,y1), (x1,y2) ]
                     |> calculateMidpoint 0 (x2,midy) [ (x2,y1), (x2,y2) ]
-                    |> calculateMidpoint d (midx,midy) [ (x1,y1), (x1,y2), (x2,y1), (x2,y2) ]
+                    |> calculateMidpoint d' (midx,midy) [ (x1,y1), (x1,y2), (x2,y1), (x2,y2) ]
                     |> (\map' -> if midinit > -1 then setElevation (midx,midy) midinit map' else map')
+                    |> (flip (,)) seed'
                     |> divideWorld x1 y1 midx midy roughness -1
                     |> divideWorld midx y1 x2 midy roughness -1
                     |> divideWorld x1 midy midx y2 roughness -1
                     |> divideWorld midx midy x2 y2 roughness -1
 
-                else map
-        result =
-            Matrix.map (\r -> { r | elevation = 0}) input
-            |> divideWorld 0 0 w h roughness elevation
+                else (map,seed')
     in
-    (result, seed)
+        Matrix.map (\r -> { r | elevation = 0}) input
+        |> (flip (,)) seed
+        |> divideWorld 0 0 w h roughness elevation
