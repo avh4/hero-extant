@@ -43,38 +43,27 @@ generate (input, seed) =
                 setElevation (x,y) v matrix =
                     Matrix.update (Matrix.loc x y) (\r -> { r | elevation <- v }) matrix
 
-                updater destination inputLocs valueComputer map' =
+                calculateMidpoint extra destination inputLocs map' =
                     let
                         allElevations =
                             List.map ((flip getElevation) map') inputLocs
                             |> all
+                        valueComputer inputs = extra + (List.sum inputs) / (toFloat <| List.length inputs)
                     in
                         allElevations
                         |> Maybe.map (\inputs ->
                             setElevation destination (valueComputer inputs) map'
                         )
                         |> Maybe.withDefault map'
-
-                computer inputs = List.sum inputs / 2
             in
                 if w' > 1 || h' > 1
                 then
                     map
-                    |> updater (midx,y1)
-                        [ (x1,y1), (x2,y1) ]
-                        computer
-                    |> updater (midx,y2)
-                        [ (x1,y2), (x2,y2) ]
-                        computer
-                    |> updater (x1,midy)
-                        [ (x1,y1), (x1,y2) ]
-                        computer
-                    |> updater (x2,midy)
-                        [ (x2,y1), (x2,y2) ]
-                        computer
-                    |> updater (midx,midy)
-                        [ (x1,y1), (x1,y2), (x2,y1), (x2,y2) ]
-                        (\inputs -> List.sum inputs / 4 + d)
+                    |> calculateMidpoint 0 (midx,y1) [ (x1,y1), (x2,y1) ]
+                    |> calculateMidpoint 0 (midx,y2) [ (x1,y2), (x2,y2) ]
+                    |> calculateMidpoint 0 (x1,midy) [ (x1,y1), (x1,y2) ]
+                    |> calculateMidpoint 0 (x2,midy) [ (x2,y1), (x2,y2) ]
+                    |> calculateMidpoint d (midx,midy) [ (x1,y1), (x1,y2), (x2,y1), (x2,y2) ]
                     |> (\map' -> if midinit > -1 then setElevation (midx,midy) midinit map' else map')
                     |> divideWorld x1 y1 midx midy roughness -1
                     |> divideWorld midx y1 x2 midy roughness -1
