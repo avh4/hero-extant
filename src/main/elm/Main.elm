@@ -7,11 +7,19 @@ import Text
 import Debug
 import Maybe exposing (map, withDefault, andThen, Maybe (..) )
 import Array
+import Time
 
 import Elevation
 
 
 initialMap = Matrix.matrix 100 100 (always {})
+
+
+generateMap seed =
+    initialMap
+    |> (flip (,)) seed
+    |> Elevation.generate
+    |> \(map,seed) -> { map = map, seed = seed }
 
 
 render : (Int,Int) -> (a -> Float) -> Matrix a -> Element
@@ -35,12 +43,20 @@ render (mapWidth,mapHeight) extract map =
         |> flow down
 
 
+type Action =
+    NewSeed
+
+update msg model =
+    case msg of
+        NewSeed ->
+            generateMap model.seed
+
+
+messages = Time.every (5 * Time.second) |> Signal.map (always NewSeed)
+
 main =
-    initialMap
-    |> (flip (,)) (Random.initialSeed 42)
-    |> Elevation.generate
-    |> fst
-    |> render (512,512) .elevation
+    Signal.foldp update (generateMap <| Random.initialSeed 42) messages
+    |> Signal.map (.map >> render (512,512) .elevation)
 
 
 --type alias Map = Matrix Value
