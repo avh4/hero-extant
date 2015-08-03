@@ -14,23 +14,42 @@ import Elevation
 
 initialMap = Matrix.matrix 100 100 (always {})
 
+type alias World a =
+    { seaLevel : Float
+    , map : Matrix a
+    }
+
+defaultSeaLevel = 0.2
+
+generateWorld seed =
+    { seaLevel = defaultSeaLevel
+    , map = generateMap seed |> fst
+    }
 
 generateMap seed =
     initialMap
     |> (flip (,)) seed
     |> Elevation.generate
-    |> \(map,seed) -> { map = map, seed = seed }
 
 
-render : (Int,Int) -> (a -> Float) -> Matrix a -> Element
-render (mapWidth,mapHeight) extract map =
+render : (Int,Int) -> (a -> Float) -> World a -> Element
+render (mapWidth,mapHeight) extract world =
     let
+        map = world.map
         boxWidth = (toFloat mapWidth) / (toFloat <| Matrix.colCount map)
         boxHeight = (toFloat mapHeight) / (toFloat <| Matrix.rowCount map)
         box = C.rect boxWidth boxHeight
 
-        colorFor value =
-            rgb (floor <| 255 * 0.75 * value) (floor <| 255 * 0.75 * value) 0
+        colorFor elevation =
+            let
+                belowSeaLevel =
+                    elevation < world.seaLevel
+
+                elevationDiff =
+                    elevation - world.seaLevel |> abs
+            in
+                if | belowSeaLevel -> rgb 0 0 (floor <| 255 * (0.5 * (elevation) + 0.5))
+                   | otherwise -> rgb (floor <| 255 * 0.75 * elevation) (floor <| 255 * 0.75 * elevation) 0
 
         cell value =
             [ C.filled (colorFor value) box ]
@@ -43,20 +62,22 @@ render (mapWidth,mapHeight) extract map =
         |> flow down
 
 
-type Action =
-    NewSeed
+type Action
+    = NewSeed Seed
 
 update msg model =
     case msg of
-        NewSeed ->
-            generateMap model.seed
+        NewSeed seed ->
+            generateWorld seed
 
 
-messages = Time.every (5 * Time.second) |> Signal.map (always NewSeed)
+messages
+    = Time.every (5 * Time.second)
+    |> Signal.map (floor >> Random.initialSeed >> NewSeed)
 
 main =
-    Signal.foldp update (generateMap <| Random.initialSeed 42) messages
-    |> Signal.map (.map >> render (512,512) .elevation)
+    Signal.foldp update (generateWorld <| Random.initialSeed 42) messages
+    |> Signal.map (render (512,512) .elevation)
 
 
 --type alias Map = Matrix Value
